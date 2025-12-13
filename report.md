@@ -9,9 +9,17 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # 1. Project Overview
+...
 
+# 2. Data Validation and Cleaning
+...
 
-## Target Variable: Sleep.Disorder (Nick)
+# 3. Preliminary Data Analysis
+After cleaning, we will begin exploratory data analysis to understand the dataset's characteristics.
+
+We will first look at the distribution of individual variables to get a baseline.
+
+## Target Variable: Sleep.Disorder
 
 ```{r}
 library(tidyverse)
