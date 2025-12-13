@@ -47,7 +47,7 @@ ggplot(df, aes(x = Sleep.Disorder)) +
   theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 ```
 
-## Question 1 (BMI Category vs. Sleep Disorder) 
+# 4. Questions
 ## Is there an association between sleep disorders and BMI category?
 
 Both variables are categorical:
