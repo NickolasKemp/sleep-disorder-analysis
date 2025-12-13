@@ -8,6 +8,8 @@ date: "2025-12-13"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# 1. Project Overview
+
 
 ## Target Variable: Sleep.Disorder (Nick)
 
