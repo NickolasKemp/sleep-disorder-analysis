@@ -7,8 +7,20 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# 1. Project Overview
-...
+## Project overview
+
+This project analyzes the **Sleep Disorder Diagnosis Dataset** (`sleep_disorder_dataset.csv`) to understand the **occurrence of sleep disorders**—primarily **Insomnia** and **Sleep Apnea**—and how they relate to **demographic**, **lifestyle**, and **physiological** factors. The dataset contains **~374 observations** and **14 (15 after cleaning) variables** describing participants’ sleep habits and outcomes (e.g., **Sleep.Duration**, **Quality.of.Sleep**), lifestyle indicators (e.g., **Physical.Activity.Level**, **Stress.Level**, **Daily.Steps**, **Caffeine.Intake**), and biometric measures (e.g., **BMI.Category**, **Blood.Pressure**, **Heart.Rate**).
+
+The analysis is designed to provide both descriptive insight (how common each sleep disorder is in this sample) and inferential/statistical conclusions about which factors are associated with sleep disorders and sleep quality. Following the project guidelines, the work begins with **data validation** in RStudio to ensure the dataset is imported correctly and contains no suspicious or missing values that could bias results, then proceeds through exploratory visualization and hypothesis-driven statistical analysis.
+
+Core research questions include:
+- Is there an association between **sleep disorder occurrence** and **BMI category**?
+- Do **women** sleep longer on average than **men**?
+- Are **stress levels** different between **doctors, teachers, and engineers**?
+- Can **sleep quality** be predicted from lifestyle habits and physiological indicators using a regression-based model?
+
+Overall, the project aims to translate the dataset into actionable statistical findings that clarify which measurable factors most strongly relate to sleep disorders and overall sleep quality in the observed population.
+
 
 # 2. Data Validation and Cleaning
 ...
