@@ -21,6 +21,79 @@ Overall, the project aims to translate the dataset into actionable statistical f
 
 Ensuring that the dataset is clean, consistent and reliable is a cruical step before analysis. Data cleaning involves checking each column for missing values, wrong entries or inconsistencies and correcting them. Numeric columns such as age, sleep duration, quality of sleep, psychical activity level, stress level, heart rate and daily sleeps and caffeine intake were summarized to confirm that all values fall within reasonable range and no impossible values or outliers exist. Categorical variables including gender, occupation, BMI category and sleep disorder, were checked for consistency and duplication. Blood pressure was special case, where format of it is "systolic/diastolic". It was carefully handled and split into 2 variables systolic and diastolic. Additionally, the first few rows of dataset were visually inspected, and unique values were reviewed to validate that no formatting errors were present. This detailed cleaning and validation process ensures that dataset is ready for accurate exploratory analysis and statistical testing.
 
+```{r}
+
+sleep_data <- read.csv("sleep_disorder_dataset.csv")
+
+# Check column names
+colnames(sleep_data)
+
+# Check for missing values in each column
+colSums(is.na(sleep_data))
+
+
+# Data cleaning column by column
+
+# 1. Gender
+table(sleep_data$Gender) # verify unique values
+
+# 2. Age
+summary(sleep_data$Age) # min, max, median, quartiles
+
+# 3. Occupation
+table(sleep_data$Occupation) # checking unique values (consistency)
+
+# 4. Sleep Duration (hours)
+summary(sleep_data$Sleep.Duration) # min, max, median, quartiles
+
+
+# 5. Quality of Sleep (0-10)
+summary(sleep_data$Quality.of.Sleep) # min, max, median, quartiles
+
+# 6. Psychical Activity level (0-100)
+summary(sleep_data$Physical.Activity.Level) # min, max, median, quartiles
+
+# 7. Stress Level (0-10)
+summary(sleep_data$Stress.Level) # min, max, median, quartiles
+
+# 8. Blood Pressure
+# Inspect first few values
+head(sleep_data$Blood.Pressure) 
+unique(sleep_data$Blood.Pressure) 
+
+# Split into Systolic and Diastolic columns
+bp_split <- strsplit(as.character(sleep_data$Blood.Pressure),"/")
+bp_matrix <- do.call(rbind, bp_split)
+sleep_data$Systolic <- as.numeric(bp_matrix[,1])
+sleep_data$Diastolic <- as.numeric(bp_matrix[,2])
+
+# Verify new columns
+head(sleep_data[, c("Blood.Pressure", "Systolic", "Diastolic")])
+summary(sleep_data$Systolic) # min, max, median, quartiles
+summary(sleep_data$Diastolic) # min, max, median, quartiles
+
+# 9.Heart Rate (bpm)
+summary(sleep_data$Heart.Rate) # min, max, median, quartiles
+
+# 10. Daily steps
+summary(sleep_data$Daily.Steps) # min, max, median, quartiles
+
+# 11. Sleep disorder
+table(sleep_data$Sleep.Disorder) # check unique values
+
+# 12. Caffeine intake (mg/day)
+summary(sleep_data$Caffeine.Intake) # min, max, median, quartiles
+
+# 13. BMI Cateogry
+table(sleep_data$BMI.Category) # verify unique values
+# Merge "normal" and "normal weight"
+sleep_data$BMI.Category[sleep_data$BMI.Category == "Normal Weight"] <- "Normal"
+table(sleep_data$BMI.Category) 
+
+
+
+```
+
 # 3. Preliminary Data Analysis
 
 After cleaning, we will begin exploratory data analysis to understand the dataset's characteristics.
