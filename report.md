@@ -82,7 +82,7 @@ All values are consistent and within expected range.
 
 **5.Quality of Sleep**
 
-The Quality of Sleep column is checked to verify all values are within the expected range..
+The Quality of Sleep column is checked to verify all values are within the expected range.
 
 ```         
 summary(sleep_data$Quality.of.Sleep) # min, max, median, quartiles
@@ -178,7 +178,7 @@ The Caffeine Intake column is checked to ensure all values are within a reasonab
 summary(sleep_data$Caffeine.Intake) # min, max, median, quartiles
 ```
 
-All values are consistent and within expected range
+All values are consistent and within expected range.
 
 **13.BMI Category**
 
