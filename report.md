@@ -90,6 +90,9 @@ table(sleep_data$BMI.Category) # verify unique values
 sleep_data$BMI.Category[sleep_data$BMI.Category == "Normal Weight"] <- "Normal"
 table(sleep_data$BMI.Category) 
 
+# Save cleaned dataset
+write.csv(sleep_data, "sleep_data_cleaned.csv", row.names = FALSE) 
+
 
 
 ```
