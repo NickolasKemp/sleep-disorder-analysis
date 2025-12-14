@@ -7,7 +7,7 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Project overview
+# 1. Project overview
 
 This project analyzes the **Sleep Disorder Diagnosis Dataset** (`sleep_disorder_dataset.csv`) to understand the **occurrence of sleep disorders**—primarily **Insomnia** and **Sleep Apnea**—and how they relate to **demographic**, **lifestyle**, and **physiological** factors. The dataset contains **~374 observations** and **14 (15 after cleaning) variables** describing participants’ sleep habits and outcomes (e.g., **Sleep.Duration**, **Quality.of.Sleep**), lifestyle indicators (e.g., **Physical.Activity.Level**, **Stress.Level**, **Daily.Steps**, **Caffeine.Intake**), and biometric measures (e.g., **BMI.Category**, **Blood.Pressure**, **Heart.Rate**).
 
@@ -57,6 +57,30 @@ ggplot(df, aes(x = Sleep.Disorder)) +
        y = "Count of Individuals") +
   theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 ```
+
+## Lifestyle Factors: Stress Level, Physical Activity Level, and Daily Steps
+
+Based on the exploratory plots of the lifestyle variables, the sample appears **moderately active overall**. The **Daily.Steps** distribution (*Plot 1*) shows that most participants fall roughly between **4,500 and 8,500 steps per day**, with the highest concentration around **7,500–8,000 steps**, and a smaller group reaching close to **10,000 steps**. This suggests that a large portion of the dataset consists of individuals who achieve a moderate amount of daily movement. 
+
+We chose to display the data using a density plot rather than a histogram because the histogram produced sharp spikes, making the distribution harder to interpret.
+
+<img width="865" height="546" alt="image" src="https://github.com/user-attachments/assets/cf292cf2-2f54-4a87-bb18-7b99bcdd817a" />
+
+*Plot 1: Daily steps distribution.*
+
+The **Physical.Activity.Level** plot (*Plot 2*) indicates that activity is not spread smoothly across the scale; instead, participants cluster at a few specific values (visible as strong spikes). This implies the variable likely represents **predefined or rounded activity scores**, meaning the dataset contains several distinct activity groups rather than a continuous range. The central tendency (marked by the vertical reference line) lies around the middle of the scale, reinforcing the conclusion that the “typical” participant has a **moderate activity level**.
+
+This time, we chose a histogram rather than a density plot because the density plot would make it harder to interpret and summarize the overall physical activity level.
+
+<img width="865" height="546" alt="image" src="https://github.com/user-attachments/assets/ebf8beed-72c2-40ce-adfd-b8fb76c34bd3" />
+
+*Plot 2: Physical Activity Level Distribution.*
+
+For **Stress.Level**, the distribution (*Plot 3*) is concentrated in the **mid-to-higher range (approximately 3–8)**. There is no dominance of very low stress values, and the presence of many observations toward the upper levels indicates that a meaningful share of participants experience **elevated stress**. Overall, the plots suggest a population that is generally **moderately active**, but with **moderate-to-high stress levels**, which may be relevant when later examining relationships with sleep quality and sleep disorders.
+
+<img width="865" height="546" alt="image" src="https://github.com/user-attachments/assets/76ac7c4f-a477-4a53-a31d-ca9c2efd92b4" />
+
+*Plot 3: Stress Level Distribution.*
 
 # 4. Questions
 ## Is there an association between sleep disorders and BMI category?
