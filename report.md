@@ -23,14 +23,13 @@ Ensuring that the dataset is clean, consistent and reliable is a cruical step be
 
 Firstly, we import the dataset into variable sleep_data.
 
-```         
-
+```r         
 sleep_data <- read.csv("sleep_disorder_dataset.csv")
 ```
 
 We check structure of the dataset by looking at column names and verifying if there are any missing values.
 
-```         
+```r         
 colnames(sleep_data)
 
 colSums(is.na(sleep_data)) # Check missing values
@@ -44,7 +43,7 @@ Now we inspect each column separately.
 
 The Gender column is examined to check the unique values and ensure there are no inconsistencies.
 
-```         
+```r         
 table(sleep_data$Gender) 
 ```
 
@@ -54,7 +53,7 @@ There are no inconsistencies.
 
 The Age column is inspected to assess the range, median, and overall distribution of values.
 
-```         
+```r         
 summary(sleep_data$Age) # min, max, median, quartiles
 ```
 
@@ -64,7 +63,7 @@ All values are consistent and within expected range.
 
 The Occupation column is checked to verify all categories and ensure there are no inconsistencies.
 
-```         
+```r         
 table(sleep_data$Occupation) 
 ```
 
@@ -74,7 +73,7 @@ There are no inconsistencies.
 
 The Sleep Duration column is examined to check the values and ensure they are within a reasonable range.
 
-```         
+```r         
 summary(sleep_data$Sleep.Duration) # min, max, median, quartiles
 ```
 
@@ -84,7 +83,7 @@ All values are consistent and within expected range.
 
 The Quality of Sleep column is checked to verify all values are within the expected range.
 
-```         
+```r         
 summary(sleep_data$Quality.of.Sleep) # min, max, median, quartiles
 ```
 
@@ -94,7 +93,7 @@ All values are consistent and within expected range.
 
 The Physical Activity Level column is examined to ensure all values fall within a reasonable range.
 
-```         
+```r         
 summary(sleep_data$Physical.Activity.Level) # min, max, median, quartiles
 ```
 
@@ -104,7 +103,7 @@ All values are consistent and within expected range.
 
 The Stress Level column is checked to verify all values are within a reasonable range.
 
-```         
+```r         
 summary(sleep_data$Stress.Level) # min, max, median, quartiles
 ```
 
@@ -114,7 +113,7 @@ All values are consistent and within expected range.
 
 Inspect first few values.
 
-```         
+```r         
 head(sleep_data$Blood.Pressure) 
 unique(sleep_data$Blood.Pressure) 
 ```
@@ -123,7 +122,7 @@ Notice form of values are systolic/diastolic.
 
 We split into Systolic and Diastolic columns.
 
-```         
+```r         
 bp_split <- strsplit(as.character(sleep_data$Blood.Pressure),"/")
 bp_matrix <- do.call(rbind, bp_split)
 sleep_data$Systolic <- as.numeric(bp_matrix[,1])
@@ -132,7 +131,7 @@ sleep_data$Diastolic <- as.numeric(bp_matrix[,2])
 
 Verify new columns.
 
-```         
+```r         
 head(sleep_data[, c("Blood.Pressure", "Systolic", "Diastolic")])
 summary(sleep_data$Systolic) # min, max, median, quartiles
 summary(sleep_data$Diastolic) # min, max, median, quartiles
@@ -144,7 +143,7 @@ Everything is consistent now.
 
 The Heart Rate column is examined to ensure all values are within a reasonable range.
 
-```         
+```r         
 summary(sleep_data$Heart.Rate) # min, max, median, quartiles
 ```
 
@@ -154,7 +153,7 @@ All values are consistent and within expected range.
 
 The Daily Steps column is checked to ensure the values are within a reasonable range.
 
-```         
+```r         
 summary(sleep_data$Daily.Steps) # min, max, median, quartiles
 ```
 
@@ -164,7 +163,7 @@ All values are consistent and withing expected range.
 
 The Sleep Disorder column is examined to verify all categories are valid and consistent.
 
-```         
+```r         
 table(sleep_data$Sleep.Disorder)
 ```
 
@@ -174,7 +173,7 @@ There are no inconsistencies.
 
 The Caffeine Intake column is checked to ensure all values are within a reasonable range.
 
-```         
+```r         
 summary(sleep_data$Caffeine.Intake) # min, max, median, quartiles
 ```
 
@@ -184,13 +183,13 @@ All values are consistent and within expected range.
 
 The BMI Category column is examined to verify all categories.
 
-```         
+```r         
 table(sleep_data$BMI.Category) # verify unique values
 ```
 
 We notice an inconsistency between "Normal" and "Normal Weight" and we must merge those 2.
 
-```         
+```r         
 sleep_data$BMI.Category[sleep_data$BMI.Category == "Normal Weight"] <- "Normal"
 table(sleep_data$BMI.Category) 
 ```
@@ -199,7 +198,7 @@ Everything is consistent now.
 
 Finally, we save cleaned dataset.
 
-```         
+```r         
 write.csv(sleep_data, "sleep_data_cleaned.csv", row.names = FALSE) 
 ```
 
@@ -211,7 +210,7 @@ We will first look at the distribution of individual variables to get a baseline
 
 ## Target Variable: Sleep.Disorder
 
-```{r}
+```r
 library(tidyverse)
 library(scales)
 
