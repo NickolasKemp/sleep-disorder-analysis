@@ -236,6 +236,32 @@ ggplot(df, aes(x = Sleep.Disorder)) +
   theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 ```
 
+## Demographics: Age and Gender
+
+We will create a histogram for Age to see the age distribution of the participants and a bar chart for Gender to see the male/female split. 
+
+```{r Age-visualizations}
+# Age Histogram
+ggplot(sleep_data, aes(x = Age)) +
+  geom_histogram(binwidth = 2, fill = "skyblue", color = "black", alpha = 0.7) +
+  labs(title = "Age Distribution of Participants",
+       x = "Age",
+       y = "Frequency") +
+  theme_minimal()
+```
+```{r gender-visualizations}
+# Gender Bar Chart
+ggplot(sleep_data, aes(x = Gender, fill = Gender)) +
+  geom_bar() +
+  labs(title = "Gender Distribution",
+       x = "Gender",
+       y = "Count") +
+  theme_minimal() +
+  scale_fill_brewer(palette = "Set2") +
+  theme(legend.position = "none")
+
+```
+
 ## Lifestyle Factors: Stress Level, Physical Activity Level, and Daily Steps
 
 Based on the exploratory plots of the lifestyle variables, the sample appears **moderately active overall**. The **Daily.Steps** distribution (*Plot 1*) shows that most participants fall roughly between **4,500 and 8,500 steps per day**, with the highest concentration around **7,500–8,000 steps**, and a smaller group reaching close to **10,000 steps**. This suggests that a large portion of the dataset consists of individuals who achieve a moderate amount of daily movement.
