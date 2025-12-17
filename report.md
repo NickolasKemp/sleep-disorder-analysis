@@ -423,4 +423,63 @@ if (chi_test$p.value < 0.05) {
 
 ## Do women sleep longer on average than men?
 
-...
+To test whether women sleep longer on average than men, we compared the mean values of **Sleep.Duration** between the two gender groups using a **one-sided two-sample t-test**.
+
+### Hypotheses
+Let *μ1* be the mean sleep duration for women and *μ2* the mean sleep duration for men.
+
+- **Null hypothesis (H0):**   *μ1 = μ2*  
+- **Alternative hypothesis (H1):**  *μ1 > μ2*  
+This is a one-tailed test because we specifically want to know whether women sleep *more* (than men).
+
+### Assumptions and checks
+Since a t-test assumes approximate normality of the sampling distribution of the mean, we first inspected the sleep duration distributions for **Female** and **Male** participants using histograms. The histograms did not show extreme departures from a roughly bell-shaped distribution. In addition, the sample sizes are sufficiently large for the **Central Limit Theorem** to support the use of a t-test even if the underlying distributions are not perfectly normal.
+
+Because we do not assume equal variances between the two groups, we used **Welch’s two-sample t-test**, which is robust to unequal variances.
+
+### Test and results
+We performed a one-sided Welch t-test in R:
+
+- **Test:** `t.test(Sleep.Duration ~ Gender, data = df, alternative = "greater")`  
+- The test returned a **p-value = 0.009**.
+
+At the **5% significance level α = 0.05**, the p-value is smaller than α, so we **reject the null hypothesis**.
+
+### Distribution of sleep duration by gender (density plot)
+
+To visually compare sleep duration between genders, we plotted a density plot for **Female** and **Male** participants (*Plot 7*). The two curves overlap substantially, indicating that the typical sleep duration is similar for many individuals in both groups. However, the **female** distribution is slightly shifted toward higher sleep durations, with relatively more density in the **upper range (around ~8 hours and above)**. In contrast, the **male** distribution shows more density around the **mid-range (roughly ~7.5–8 hours)** and relatively less density at the highest values.
+
+<img width="798" height="546" alt="image" src="https://github.com/user-attachments/assets/afe56dbc-5e3c-443c-99c4-07a82520c8b1" />
+
+*Plot 7: Density plots for sleep duration by gender*
+
+Overall, the density plot suggests a **small but noticeable tendency for women to sleep longer** than men. This visual pattern is consistent with the hypothesis test results, where the one-sided Welch t-test provided statistical evidence that the mean sleep duration for women is greater than that for men.
+
+
+### Conclusion
+There is **statistical evidence** that **women sleep longer on average than men** in this dataset. However, this result describes an association within the observed sample and does not by itself establish a causal relationship.
+
+R code for conducting the **one-sided Welch t-test** and drawing the plot:
+```r
+library(readr)
+library(ggplot2)
+
+df <- read_csv("sleep_data_cleaned.csv")
+str(df)
+unique(df$Gender)
+
+ttest_result <- t.test(Sleep.Duration ~ Gender,  data = df, alternative = "greater") 
+
+print(ttest_result)
+
+if(ttest_result$p.value < 0.05){
+  print("Reject H0: There is statistical evidence that women sleep longer on average than men")
+} else {
+  print("Fail to reject H0: There is no statistical evidence that women sleep longer on average than men")
+}
+
+ggplot(df, aes(x = Sleep.Duration, fill = Gender)) +
+  geom_density(alpha = 0.4) +
+  labs(title = "Sleep Duration Density by Gender", x = "Hours", y = "Density") +
+  theme_minimal()
+```
