@@ -364,53 +364,85 @@ ggplot(df, aes(x = Heart.Rate)) +
 
 ## Is there an association between sleep disorders and BMI category?
 
-Both variables are categorical: - **BMI.Category** (Underweight, Normal, Overweight, Obese) - **Sleep.Disorder** (None, Insomnia, Sleep Apnea)
+Both variables are categorical:
+- **BMI.Category** (Underweight, Normal, Overweight, Obese)
+- **Sleep.Disorder** (None, Insomnia, Sleep Apnea)
 
 Because we are analyzing the relationship between two categorical variables, we use a **Chi-Square Test of Independence**.
 
-------------------------------------------------------------------------
+---
 
 ### Hypotheses
 
--   **Null Hypothesis (H₀):**\
-    BMI category and sleep disorder are independent.\
-    Knowing a person’s BMI category gives no information about their sleep disorder.
+- **Null Hypothesis (H₀):**  
+  BMI category and sleep disorder are independent.  
+  Knowing a person’s BMI category gives no information about their sleep disorder.
 
--   **Alternative Hypothesis (H₁):**\
-    BMI category and sleep disorder are associated.\
-    Knowing a person’s BMI category gives information about their sleep disorder.
+- **Alternative Hypothesis (H₁):**  
+  BMI category and sleep disorder are associated.  
+  Knowing a person’s BMI category gives information about their sleep disorder.
 
-------------------------------------------------------------------------
+---
 
 ### Statistical Method
 
-The Chi-Square Test of Independence compares: - the **observed frequencies** of sleep disorders within each BMI category - the **expected frequencies** assuming the two variables are independent
+The Chi-Square Test of Independence compares:
+- the **observed frequencies** of sleep disorders within each BMI category
+- the **expected frequencies** assuming the two variables are independent
 
 Large differences between observed and expected counts indicate a possible association.
 
-------------------------------------------------------------------------
+---
 
 ### Contingency Table
 
 ```{r}
 bmi_sleep_table <- table(df$BMI.Category, df$Sleep.Disorder)
-
 bmi_sleep_table
+
+
+chi_test <- chisq.test(bmi_sleep_table)
+expected_counts <- chi_test$expected
+print(expected_counts)
+
+if (any(expected_counts < 5)) {
+  print("Warning: Small expected frequencies detected")
+}
+
+```
+
+Since in the we have very small counts (less than 5) in some cells, the Chi-Square test's p-value calculation can become unreliable. Let's merge `Overweight` and `Obese` into a single one
+
+
+```{r}
+
+df$BMI.Category.Merged <- as.character(df$BMI.Category)
+df$BMI.Category.Merged[df$BMI.Category.Merged %in% c("Overweight", "Obese")] <- "Overweight/Obese"
+df$BMI.Category.Merged <- as.factor(df$BMI.Category.Merged)
+bmi_sleep_table_merged <- table(df$BMI.Category.Merged, df$Sleep.Disorder)
+
+print("--- Observed Frequencies ---")
+bmi_sleep_table_merged
+
+
+print("--- Expected Frequencies ---")
+chi_test <- chisq.test(bmi_sleep_table_merged)
+print(chi_test$expected)
+
 ```
 
 ### Chi-Square test
 
 ```{r}
-chi_test <- chisq.test(bmi_sleep_table)
+chi_test <- chisq.test(bmi_sleep_table_merged)
 
 chi_test
 ```
-
 ### P-value
-
 ```{r}
 chi_test$p.value
 ```
+
 
 ```{r}
 if (chi_test$p.value < 0.05) {
