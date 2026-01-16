@@ -515,3 +515,106 @@ ggplot(df, aes(x = Sleep.Duration, fill = Gender)) +
   labs(title = "Sleep Duration Density by Gender", x = "Hours", y = "Density") +
   theme_minimal()
 ```
+## Can we predict sleep quality based on lifestyle habits and physiological indicators?
+To determine whether sleep quality can be predicted by various lifestyle and physiological factors, we fitted a multiple linear regression model. We used Quality.of.Sleep as the dependent variable and a set of independent variables: lifestyle (e.g., Stress Level, BMI),physiological (e.g., Blood Pressure) indicators.
+
+To evaluate the model's performance, we calculated both Multiple R-squared and Adjusted R-squared. While Multiple R-squared indicates the total proportion of variance explained by the model, we primarily relied on Adjusted R-squared to assess effectiveness, as it corrects for the number of predictors and prevents overestimation of the model's fit. Additionally, to identify which specific factors significantly influence sleep quality, we examined the t-statistics for each independent variable. A significant t-statistic (with a p-value < 0.05) indicates that the specific factor has a statistically significant linear relationship with sleep quality.
+
+### Hypotheses
+In multiple linear regression, we test the significance of the coefficient $\beta_j$ for each predictor $j$, holding all other variables constant.
+
+- **Null hypothesis ($H_0$):** $\beta_j = 0$  
+  (There is no linear relationship between predictor $j$ and Sleep Quality; the variable has no effect).
+- **Alternative hypothesis ($H_1$):** $\beta_j \neq 0$  
+  (There is a significant linear relationship; the variable has a non-zero effect on Sleep Quality).
+
+We perform this two-sided t-test for every predictor included in the model.
+
+### Assumptions and checks
+Before interpreting the results, we performed two key checks to ensure the model is valid:
+
+1.  **Independence of predictors:** We checked that the variables (like blood pressure components and stress) are distinct enough and do not heavily overlap with each other (no critical multicollinearity).
+2.  **Sample Size:** Since we have a large number of observations ($n=374$), the statistical tests used by the model are reliable and robust, even if the data isn't perfectly normally distributed.
+
+### Test and results
+We fitted the linear model using `lm()` in R and examined the **t-statistics** and corresponding **p-values** for each coefficient from the model summary (`summary(model)`).
+
+**Significant findings:**
+1.  **Stress Level:** The test returned a large negative t-statistic with a **p-value < 0.001**.
+2.  **BMI Category (Overweight):** The test returned a negative t-statistic with a **p-value = 0.002**.
+3.  **Age:** The test returned a positive t-statistic with a **p-value = 0.002**.
+
+At the **5% significance level ($\alpha = 0.05$)**, the p-values for these factors are smaller than $\alpha$. Therefore, we **reject the null hypothesis ($H_0$)** for Stress Level, BMI (Overweight), and Age, concluding that they significantly influence sleep quality.
+
+**Non-significant findings:**
+For variables such as **Physical Activity**, **Heart Rate**, and **Sleep Duration**, the p-values were greater than 0.05. Thus, we **fail to reject the null hypothesis** for these factors, meaning there is insufficient evidence to claim they affect sleep quality in this specific multivariate context.
+
+### Model Accuracy ($R^2$ and Adjusted $R^2$)
+To evaluate how well our model fits the data, we calculated two key metrics:
+
+- **Multiple R-squared:** $0.57$
+- **Adjusted R-squared:** $0.56$
+
+**What do these numbers mean?**
+The **Adjusted R-squared of 0.56** indicates that our model explains approximately **56% of the variance** in sleep quality using the selected lifestyle and physiological factors. We focus on the *Adjusted* metric because it corrects for the number of predictors, providing a more conservative and accurate measure. 
+
+This is considered a **fairly good result**. While we capture more than half of what determines sleep quality, the remaining ~44% suggests that other unmeasured factors—such as environment (noise, temperature, mattress quality) or genetics—also play a significant role. Given that we only used basic lifestyle data, explaining 56% of the variation is a strong outcome.
+
+### Model Performance: Actual vs. Predicted Sleep Quality (Scatter Plot)
+
+To visually assess the model's accuracy, we plotted the **Actual** sleep quality scores against the **Predicted** scores (*Plot 8*).
+
+The plot includes a **black dashed line** representing perfect prediction ($y=x$) and a **red solid line** showing the model's trend. The data points generally cluster along the diagonal, confirming that the model correctly captures the main trend: better lifestyle factors correspond to higher predicted sleep quality.
+
+However, the visible spread of points around the line reflects the **~44% unexplained variance**. This visual pattern is consistent with the Adjusted $R^2$ of 0.56, indicating that the model is reliable for predicting general trends but lacks precision for specific individual outliers.
+
+<img width="700" height="432" alt="image" src="https://github.com/user-attachments/assets/63d4eefc-184e-4bc5-92ff-ff25a69e5620" />
+
+*Plot 8: Actual vs. Predicted Sleep Quality*
+
+### Conclusion
+There is **statistical evidence** that **Stress Level**, **BMI Category**, and **Age** are significant predictors of sleep quality. Specifically, lower stress, normal weight, and older age are associated with higher sleep scores. However, the model explains approximately **56% of the variance**, suggesting that while these lifestyle factors are crucial, other unmeasured individual differences also play a significant role.
+
+R code for conducting the multiple linear regression analysis and drawing the prediction plot:
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+
+# 1 Load pre-cleaned data
+df <- read_csv("sleep_data_cleaned.csv", show_col_types = FALSE)
+
+# 2 Build Linear Regression Model
+model <- lm(Quality.of.Sleep ~ Age + Gender + Physical.Activity.Level + Stress.Level + 
+            BMI.Category + Heart.Rate + Daily.Steps + Sleep.Duration + Systolic + Diastolic, 
+            data = df)
+
+# 3 Output Results
+summ <- summary(model)
+
+cat("Model Accuracy Metrics:\n")
+cat("Multiple R-squared:", round(summ$r.squared, 3), "(Variance explained)\n")
+cat("Adjusted R-squared:", round(summ$adj.r.squared, 3), "(Adjusted for predictors)\n\n")
+
+# Significant Factors
+coeffs <- summary(model)$coefficients
+significant_factors <- coeffs[coeffs[, 4] < 0.05, ]
+
+print("Significant Factors affecting Sleep Quality (p-value < 0.05):")
+print(significant_factors)
+
+# 4 Visualization: Actual vs Predicted
+df$Predicted_Sleep_Quality <- predict(model)
+
+ggplot(df, aes(x = Quality.of.Sleep, y = Predicted_Sleep_Quality)) +
+  geom_point(color = "blue", alpha = 0.6) +
+  geom_smooth(method = "lm", color = "red", se = FALSE) + 
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black") + 
+  labs(
+    title = "Model Performance: Actual vs Predicted Sleep Quality",
+    x = "Actual Quality of Sleep (Survey Score)",
+    y = "Predicted Quality of Sleep (Model Score)",
+    subtitle = "Black dashed line = Perfect Prediction. Red line = Our Model trend."
+  ) +
+  theme_minimal()
+```
