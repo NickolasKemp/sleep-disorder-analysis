@@ -1,6 +1,9 @@
 ---
 title: "sleep disorder analysis"
 output: pdf_document
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
@@ -9,111 +12,82 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # 1. Project overview
 
-This project analyzes the **Sleep Disorder Diagnosis Dataset** (`sleep_disorder_dataset.csv`) to understand the **occurrence of sleep disorders**—primarily **Insomnia** and **Sleep Apnea**—and how they relate to **demographic**, **lifestyle**, and **physiological** factors. The dataset contains **\~374 observations** and **14 (15 after cleaning) variables** describing participants’ sleep habits and outcomes (e.g., **Sleep.Duration**, **Quality.of.Sleep**), lifestyle indicators (e.g., **Physical.Activity.Level**, **Stress.Level**, **Daily.Steps**, **Caffeine.Intake**), and biometric measures (e.g., **BMI.Category**, **Blood.Pressure**, **Heart.Rate**).
+This project analyzes the **Sleep Disorder Diagnosis Dataset**
+(`sleep_disorder_dataset.csv`) to understand the **occurrence of sleep
+disorders**—primarily **Insomnia** and **Sleep Apnea**—and how they
+relate to **demographic**, **lifestyle**, and **physiological** factors.
+The dataset contains **\~374 observations** and **14 (15 after cleaning)
+variables** describing participants’ sleep habits and outcomes (e.g.,
+**Sleep.Duration**, **Quality.of.Sleep**), lifestyle indicators (e.g.,
+**Physical.Activity.Level**, **Stress.Level**, **Daily.Steps**,
+**Caffeine.Intake**), and biometric measures (e.g., **BMI.Category**,
+**Blood.Pressure**, **Heart.Rate**).
 
-The analysis is designed to provide both descriptive insight (how common each sleep disorder is in this sample) and inferential/statistical conclusions about which factors are associated with sleep disorders and sleep quality. Following the project guidelines, the work begins with **data validation** in RStudio to ensure the dataset is imported correctly and contains no suspicious or missing values that could bias results, then proceeds through exploratory visualization and hypothesis-driven statistical analysis.
+The analysis is designed to provide both descriptive insight (how common
+each sleep disorder is in this sample) and inferential/statistical
+conclusions about which factors are associated with sleep disorders and
+sleep quality. Following the project guidelines, the work begins with
+**data validation** in RStudio to ensure the dataset is imported
+correctly and contains no suspicious or missing values that could bias
+results, then proceeds through exploratory visualization and
+hypothesis-driven statistical analysis.
 
-Core research questions include: - Is there an association between **sleep disorder occurrence** and **BMI category**? - Do **women** sleep longer on average than **men**? - Are **stress levels** different between **doctors, teachers, and engineers**? - Can **sleep quality** be predicted from lifestyle habits and physiological indicators using a regression-based model?
+Core research questions include: - Is there an association between
+**sleep disorder occurrence** and **BMI category**? - Do **women** sleep
+longer on average than **men**? - Are **stress levels** different
+between **doctors, teachers, and engineers**? - Can **sleep quality** be
+predicted from lifestyle habits and physiological indicators using a
+regression-based model?
 
-Overall, the project aims to translate the dataset into actionable statistical findings that clarify which measurable factors most strongly relate to sleep disorders and overall sleep quality in the observed population.
+Overall, the project aims to translate the dataset into actionable
+statistical findings that clarify which measurable factors most strongly
+relate to sleep disorders and overall sleep quality in the observed
+population.
 
 # 2. Data Validation and Cleaning
 
-Ensuring that the dataset is clean, consistent and reliable is a cruical step before analysis. Data cleaning involves checking each column for missing values, wrong entries or inconsistencies and correcting them. Numeric columns such as age, sleep duration, quality of sleep, psychical activity level, stress level, heart rate and daily sleeps and caffeine intake were summarized to confirm that all values fall within reasonable range and no impossible values or outliers exist. Categorical variables including gender, occupation, BMI category and sleep disorder, were checked for consistency and duplication. Blood pressure was special case, where format of it is "systolic/diastolic". It was carefully handled and split into 2 variables systolic and diastolic. Additionally, the first few rows of dataset were visually inspected, and unique values were reviewed to validate that no formatting errors were present. This detailed cleaning and validation process ensures that dataset is ready for accurate exploratory analysis and statistical testing.
+Ensuring that the dataset is clean, consistent and reliable is a cruical
+step before analysis. Data cleaning involves checking each column for
+missing values, wrong entries or inconsistencies and correcting them.
+Numeric columns such as age, sleep duration, quality of sleep, psychical
+activity level, stress level, heart rate and daily sleeps and caffeine
+intake were summarized to confirm that all values fall within reasonable
+range and no impossible values or outliers exist. Categorical variables
+including gender, occupation, BMI category and sleep disorder, were
+checked for consistency and duplication. Blood pressure was special
+case, where format of it is "systolic/diastolic". It was carefully
+handled and split into 2 variables systolic and diastolic. Additionally,
+the first few rows of dataset were visually inspected, and unique values
+were reviewed to validate that no formatting errors were present. This
+detailed cleaning and validation process ensures that dataset is ready
+for accurate exploratory analysis and statistical testing.
 
 Firstly, we import the dataset into variable sleep_data.
 
-```r         
+``` r
 sleep_data <- read.csv("sleep_disorder_dataset.csv")
 ```
 
-We check structure of the dataset by looking at column names and verifying if there are any missing values.
+We check structure of the dataset by looking at column names and
+verifying if there are any missing values. We do that by summary of all
+variables, which provides an overview of variable types, value ranges,
+category frequencies and the presence of missing value.
 
-```r         
-colnames(sleep_data)
-
-colSums(is.na(sleep_data)) # Check missing values
+``` r
+# Summary of all columns
+summary(sleep_data)
 ```
 
-There are no missing values.
+The summary indicates that there are no missing values in the dataset
+and that all numerical variables, except blood pressure which is stored
+in a combined format, fall within reasonable and expected ranges.
 
-Now we inspect each column separately.
+Before continuing the analysis, the **Blood Pressure** column requires
+special attention.
 
-**1.Gender**
+We inspect first few values.
 
-The Gender column is examined to check the unique values and ensure there are no inconsistencies.
-
-```r         
-table(sleep_data$Gender) 
-```
-
-There are no inconsistencies.
-
-**2.Age**
-
-The Age column is inspected to assess the range, median, and overall distribution of values.
-
-```r         
-summary(sleep_data$Age) # min, max, median, quartiles
-```
-
-All values are consistent and within expected range.
-
-**3.Occupation**
-
-The Occupation column is checked to verify all categories and ensure there are no inconsistencies.
-
-```r         
-table(sleep_data$Occupation) 
-```
-
-There are no inconsistencies.
-
-**4.Sleep Duration(hours)**
-
-The Sleep Duration column is examined to check the values and ensure they are within a reasonable range.
-
-```r         
-summary(sleep_data$Sleep.Duration) # min, max, median, quartiles
-```
-
-All values are consistent and within expected range.
-
-**5.Quality of Sleep**
-
-The Quality of Sleep column is checked to verify all values are within the expected range.
-
-```r         
-summary(sleep_data$Quality.of.Sleep) # min, max, median, quartiles
-```
-
-All values are consistent and within expected range.
-
-**6.Psyhical Activity Level**
-
-The Physical Activity Level column is examined to ensure all values fall within a reasonable range.
-
-```r         
-summary(sleep_data$Physical.Activity.Level) # min, max, median, quartiles
-```
-
-All values are consistent and within expected range.
-
-**7.Stress Level**
-
-The Stress Level column is checked to verify all values are within a reasonable range.
-
-```r         
-summary(sleep_data$Stress.Level) # min, max, median, quartiles
-```
-
-All values are consistent and within expected range.
-
-**8.Blood Pressure**
-
-Inspect first few values.
-
-```r         
+``` r
 head(sleep_data$Blood.Pressure) 
 unique(sleep_data$Blood.Pressure) 
 ```
@@ -122,72 +96,27 @@ Notice form of values are systolic/diastolic.
 
 We split into Systolic and Diastolic columns.
 
-```r         
+``` r
 bp_split <- strsplit(as.character(sleep_data$Blood.Pressure),"/")
 bp_matrix <- do.call(rbind, bp_split)
 sleep_data$Systolic <- as.numeric(bp_matrix[,1])
 sleep_data$Diastolic <- as.numeric(bp_matrix[,2])
 ```
 
-Verify new columns.
+After resolving this issue, the analysis proceeds with the examination
+of categorical variables.
 
-```r         
-head(sleep_data[, c("Blood.Pressure", "Systolic", "Diastolic")])
-summary(sleep_data$Systolic) # min, max, median, quartiles
-summary(sleep_data$Diastolic) # min, max, median, quartiles
+**Categorical variables** were examined to verify the validity and
+consistency of category labels and to identify potential duplicates or
+misspellings.
+
+``` r
+categorical_cols <- c("Gender", "Occupation", "BMI.Category", "Sleep.Disorder")
+
+lapply(sleep_data[categorical_cols], table)
 ```
 
-Everything is consistent now.
-
-**9.Heart Rate**
-
-The Heart Rate column is examined to ensure all values are within a reasonable range.
-
-```r         
-summary(sleep_data$Heart.Rate) # min, max, median, quartiles
-```
-
-All values are consistent and within expected range.
-
-**10.Daily Steps**
-
-The Daily Steps column is checked to ensure the values are within a reasonable range.
-
-```r         
-summary(sleep_data$Daily.Steps) # min, max, median, quartiles
-```
-
-All values are consistent and withing expected range.
-
-**11.Sleep disorder**
-
-The Sleep Disorder column is examined to verify all categories are valid and consistent.
-
-```r         
-table(sleep_data$Sleep.Disorder)
-```
-
-There are no inconsistencies.
-
-**12.Caffeine Intake(mg/day)**
-
-The Caffeine Intake column is checked to ensure all values are within a reasonable range.
-
-```r         
-summary(sleep_data$Caffeine.Intake) # min, max, median, quartiles
-```
-
-All values are consistent and within expected range.
-
-**13.BMI Category**
-
-The BMI Category column is examined to verify all categories.
-
-```r         
-table(sleep_data$BMI.Category) # verify unique values
-```
-
-We notice an inconsistency between "Normal" and "Normal Weight" and we must merge those 2.
+An inconsistency was detected in the BMI category, where the labels “Normal” and “Normal Weight” referred to the same group. We merge those 2.
 
 ```r         
 sleep_data$BMI.Category[sleep_data$BMI.Category == "Normal Weight"] <- "Normal"
@@ -198,19 +127,21 @@ Everything is consistent now.
 
 Finally, we save cleaned dataset.
 
-```r         
+``` r
 write.csv(sleep_data, "sleep_data_cleaned.csv", row.names = FALSE) 
 ```
 
 # 3. Preliminary Data Analysis
 
-After cleaning, we will begin exploratory data analysis to understand the dataset's characteristics.
+After cleaning, we will begin exploratory data analysis to understand
+the dataset's characteristics.
 
-We will first look at the distribution of individual variables to get a baseline.
+We will first look at the distribution of individual variables to get a
+baseline.
 
 ## Target Variable: Sleep.Disorder
 
-```r
+``` r
 library(tidyverse)
 library(scales)
 
@@ -238,7 +169,8 @@ ggplot(df, aes(x = Sleep.Disorder)) +
 
 ## Demographics: Age and Gender
 
-We will create a histogram for Age to see the age distribution of the participants and a bar chart for Gender to see the male/female split. 
+We will create a histogram for Age to see the age distribution of the
+participants and a bar chart for Gender to see the male/female split.
 
 ```{r Age-visualizations}
 # Age Histogram
@@ -249,6 +181,7 @@ ggplot(sleep_data, aes(x = Age)) +
        y = "Frequency") +
   theme_minimal()
 ```
+
 ```{r gender-visualizations}
 # Gender Bar Chart
 ggplot(sleep_data, aes(x = Gender, fill = Gender)) +
@@ -264,23 +197,48 @@ ggplot(sleep_data, aes(x = Gender, fill = Gender)) +
 
 ## Lifestyle Factors: Stress Level, Physical Activity Level, and Daily Steps
 
-Based on the exploratory plots of the lifestyle variables, the sample appears **moderately active overall**. The **Daily.Steps** distribution (*Plot 1*) shows that most participants fall roughly between **4,500 and 8,500 steps per day**, with the highest concentration around **7,500–8,000 steps**, and a smaller group reaching close to **10,000 steps**. This suggests that a large portion of the dataset consists of individuals who achieve a moderate amount of daily movement.
+Based on the exploratory plots of the lifestyle variables, the sample
+appears **moderately active overall**. The **Daily.Steps** distribution
+(*Plot 1*) shows that most participants fall roughly between **4,500 and
+8,500 steps per day**, with the highest concentration around
+**7,500–8,000 steps**, and a smaller group reaching close to **10,000
+steps**. This suggests that a large portion of the dataset consists of
+individuals who achieve a moderate amount of daily movement.
 
-We chose to display the data using a density plot rather than a histogram because the histogram produced sharp spikes, making the distribution harder to interpret.
+We chose to display the data using a density plot rather than a
+histogram because the histogram produced sharp spikes, making the
+distribution harder to interpret.
 
 <img src="https://github.com/user-attachments/assets/cf292cf2-2f54-4a87-bb18-7b99bcdd817a" alt="image" width="865" height="546"/>
 
 *Plot 1: Daily steps distribution.*
 
-The **Physical.Activity.Level** plot (*Plot 2*) indicates that activity is not spread smoothly across the scale; instead, participants cluster at a few specific values (visible as strong spikes). This implies the variable likely represents **predefined or rounded activity scores**, meaning the dataset contains several distinct activity groups rather than a continuous range. The central tendency (marked by the vertical reference line) lies around the middle of the scale, reinforcing the conclusion that the “typical” participant has a **moderate activity level**.
+The **Physical.Activity.Level** plot (*Plot 2*) indicates that activity
+is not spread smoothly across the scale; instead, participants cluster
+at a few specific values (visible as strong spikes). This implies the
+variable likely represents **predefined or rounded activity scores**,
+meaning the dataset contains several distinct activity groups rather
+than a continuous range. The central tendency (marked by the vertical
+reference line) lies around the middle of the scale, reinforcing the
+conclusion that the “typical” participant has a **moderate activity
+level**.
 
-This time, we chose a histogram rather than a density plot because the density plot would make it harder to interpret and summarize the overall physical activity level.
+This time, we chose a histogram rather than a density plot because the
+density plot would make it harder to interpret and summarize the overall
+physical activity level.
 
 <img src="https://github.com/user-attachments/assets/ebf8beed-72c2-40ce-adfd-b8fb76c34bd3" alt="image" width="865" height="546"/>
 
 *Plot 2: Physical Activity Level Distribution.*
 
-For **Stress.Level**, the distribution (*Plot 3*) is concentrated in the **mid-to-higher range (approximately 3–8)**. There is no dominance of very low stress values, and the presence of many observations toward the upper levels indicates that a meaningful share of participants experience **elevated stress**. Overall, the plots suggest a population that is generally **moderately active**, but with **moderate-to-high stress levels**, which may be relevant when later examining relationships with sleep quality and sleep disorders.
+For **Stress.Level**, the distribution (*Plot 3*) is concentrated in the
+**mid-to-higher range (approximately 3–8)**. There is no dominance of
+very low stress values, and the presence of many observations toward the
+upper levels indicates that a meaningful share of participants
+experience **elevated stress**. Overall, the plots suggest a population
+that is generally **moderately active**, but with **moderate-to-high
+stress levels**, which may be relevant when later examining
+relationships with sleep quality and sleep disorders.
 
 <img src="https://github.com/user-attachments/assets/76ac7c4f-a477-4a53-a31d-ca9c2efd92b4" alt="image" width="865" height="546"/>
 
@@ -314,21 +272,43 @@ ggplot(df, aes(x = factor(Stress.Level, levels = 1:9))) +
 
 ## Biometrics: Sleep Duration, Quality of Sleep, and Heart Rate
 
-To describe the baseline sleep and physiological characteristics of the participants, we examined the distributions of **Sleep.Duration**, **Quality.of.Sleep**, and **Heart.Rate**. These plots provide an overview of what is “typical” in the dataset and help frame later comparisons across gender, occupation, and sleep disorder groups.
+To describe the baseline sleep and physiological characteristics of the
+participants, we examined the distributions of **Sleep.Duration**,
+**Quality.of.Sleep**, and **Heart.Rate**. These plots provide an
+overview of what is “typical” in the dataset and help frame later
+comparisons across gender, occupation, and sleep disorder groups.
 
-The **Sleep.Duration** distribution (*Plot 4*) shows that most participants sleep between roughly **6 and 8.5 hours**, with noticeable peaks around **\~6–6.5 hours** and **\~7.5–8 hours**. Very short (\<6 hours) and very long (\~9 hours) sleep durations are less common. Overall, the sample appears to cluster around a fairly typical sleep range, but with clear variation that may be linked to lifestyle factors or sleep disorder status.
+The **Sleep.Duration** distribution (*Plot 4*) shows that most
+participants sleep between roughly **6 and 8.5 hours**, with noticeable
+peaks around **\~6–6.5 hours** and **\~7.5–8 hours**. Very short (\<6
+hours) and very long (\~9 hours) sleep durations are less common.
+Overall, the sample appears to cluster around a fairly typical sleep
+range, but with clear variation that may be linked to lifestyle factors
+or sleep disorder status.
 
 <img src="https://github.com/user-attachments/assets/48f1a730-bccf-40ac-8704-892a5e94a358" alt="image" width="798" height="546"/>
 
 *Plot 4: Sleep Duration Distribution.*
 
-The **Quality.of.Sleep** distribution (*Plot 5*) is concentrated in the **mid-to-high range**, with the highest density around approximately **7–8** on the 1–10 scale. Lower scores (around 4–5) occur less frequently, suggesting that most participants report **moderate to good sleep quality**, while a smaller subset experiences poorer perceived sleep quality.
+The **Quality.of.Sleep** distribution (*Plot 5*) is concentrated in the
+**mid-to-high range**, with the highest density around approximately
+**7–8** on the 1–10 scale. Lower scores (around 4–5) occur less
+frequently, suggesting that most participants report **moderate to good
+sleep quality**, while a smaller subset experiences poorer perceived
+sleep quality.
 
 <img src="https://github.com/user-attachments/assets/9c6c65bb-5d59-4634-9891-477fced5a473" alt="image" width="798" height="546"/>
 
 *Plot 5: Quality of Sleep Distribution.*
 
-Finally, the **Heart.Rate** distribution (*Plot 6*) is centered around the **high 60s to low 70s bpm**, indicating that the majority of participants fall within a relatively typical resting heart rate range. The distribution is slightly right-skewed, with fewer individuals showing higher values (above \~80 bpm). These higher heart rates may reflect differences in fitness, stress, or health status and could be informative when examined alongside stress, activity, and sleep disorder categories.
+Finally, the **Heart.Rate** distribution (*Plot 6*) is centered around
+the **high 60s to low 70s bpm**, indicating that the majority of
+participants fall within a relatively typical resting heart rate range.
+The distribution is slightly right-skewed, with fewer individuals
+showing higher values (above \~80 bpm). These higher heart rates may
+reflect differences in fitness, stress, or health status and could be
+informative when examined alongside stress, activity, and sleep disorder
+categories.
 
 <img src="https://github.com/user-attachments/assets/c5cd904a-d3de-416e-b747-4ea711082c79" alt="image" width="798" height="546"/>
 
@@ -364,35 +344,38 @@ ggplot(df, aes(x = Heart.Rate)) +
 
 ## Is there an association between sleep disorders and BMI category?
 
-Both variables are categorical:
-- **BMI.Category** (Underweight, Normal, Overweight, Obese)
-- **Sleep.Disorder** (None, Insomnia, Sleep Apnea)
+Both variables are categorical: - **BMI.Category** (Underweight, Normal,
+Overweight, Obese) - **Sleep.Disorder** (None, Insomnia, Sleep Apnea)
 
-Because we are analyzing the relationship between two categorical variables, we use a **Chi-Square Test of Independence**.
+Because we are analyzing the relationship between two categorical
+variables, we use a **Chi-Square Test of Independence**.
 
----
+------------------------------------------------------------------------
 
 ### Hypotheses
 
-- **Null Hypothesis (H₀):**  
-  BMI category and sleep disorder are independent.  
-  Knowing a person’s BMI category gives no information about their sleep disorder.
+-   **Null Hypothesis (H₀):**\
+    BMI category and sleep disorder are independent.\
+    Knowing a person’s BMI category gives no information about their
+    sleep disorder.
 
-- **Alternative Hypothesis (H₁):**  
-  BMI category and sleep disorder are associated.  
-  Knowing a person’s BMI category gives information about their sleep disorder.
+-   **Alternative Hypothesis (H₁):**\
+    BMI category and sleep disorder are associated.\
+    Knowing a person’s BMI category gives information about their sleep
+    disorder.
 
----
+------------------------------------------------------------------------
 
 ### Statistical Method
 
-The Chi-Square Test of Independence compares:
-- the **observed frequencies** of sleep disorders within each BMI category
-- the **expected frequencies** assuming the two variables are independent
+The Chi-Square Test of Independence compares: - the **observed
+frequencies** of sleep disorders within each BMI category - the
+**expected frequencies** assuming the two variables are independent
 
-Large differences between observed and expected counts indicate a possible association.
+Large differences between observed and expected counts indicate a
+possible association.
 
----
+------------------------------------------------------------------------
 
 ### Contingency Table
 
@@ -411,8 +394,9 @@ if (any(expected_counts < 5)) {
 
 ```
 
-Since in the we have very small counts (less than 5) in some cells, the Chi-Square test's p-value calculation can become unreliable. Let's merge `Overweight` and `Obese` into a single one
-
+Since in the we have very small counts (less than 5) in some cells, the
+Chi-Square test's p-value calculation can become unreliable. Let's merge
+`Overweight` and `Obese` into a single one
 
 ```{r}
 
@@ -438,11 +422,12 @@ chi_test <- chisq.test(bmi_sleep_table_merged)
 
 chi_test
 ```
+
 ### P-value
+
 ```{r}
 chi_test$p.value
 ```
-
 
 ```{r}
 if (chi_test$p.value < 0.05) {
@@ -455,44 +440,77 @@ if (chi_test$p.value < 0.05) {
 
 ## Do women sleep longer on average than men?
 
-To test whether women sleep longer on average than men, we compared the mean values of **Sleep.Duration** between the two gender groups using a **one-sided two-sample t-test**.
+To test whether women sleep longer on average than men, we compared the
+mean values of **Sleep.Duration** between the two gender groups using a
+**one-sided two-sample t-test**.
 
 ### Hypotheses
-Let *μ1* be the mean sleep duration for women and *μ2* the mean sleep duration for men.
 
-- **Null hypothesis (H0):**   *μ1 = μ2*  
-- **Alternative hypothesis (H1):**  *μ1 > μ2*  
-This is a one-tailed test because we specifically want to know whether women sleep *more* (than men).
+Let *μ1* be the mean sleep duration for women and *μ2* the mean sleep
+duration for men.
+
+-   **Null hypothesis (H0):** *μ1 = μ2*\
+-   **Alternative hypothesis (H1):** *μ1 \> μ2*\
+    This is a one-tailed test because we specifically want to know
+    whether women sleep *more* (than men).
 
 ### Assumptions and checks
-Since a t-test assumes approximate normality of the sampling distribution of the mean, we first inspected the sleep duration distributions for **Female** and **Male** participants using histograms. The histograms did not show extreme departures from a roughly bell-shaped distribution. In addition, the sample sizes are sufficiently large for the **Central Limit Theorem** to support the use of a t-test even if the underlying distributions are not perfectly normal.
 
-Because we do not assume equal variances between the two groups, we used **Welch’s two-sample t-test**, which is robust to unequal variances.
+Since a t-test assumes approximate normality of the sampling
+distribution of the mean, we first inspected the sleep duration
+distributions for **Female** and **Male** participants using histograms.
+The histograms did not show extreme departures from a roughly
+bell-shaped distribution. In addition, the sample sizes are sufficiently
+large for the **Central Limit Theorem** to support the use of a t-test
+even if the underlying distributions are not perfectly normal.
+
+Because we do not assume equal variances between the two groups, we used
+**Welch’s two-sample t-test**, which is robust to unequal variances.
 
 ### Test and results
+
 We performed a one-sided Welch t-test in R:
 
-- **Test:** `t.test(Sleep.Duration ~ Gender, data = df, alternative = "greater")`  
-- The test returned a **p-value = 0.009**.
+-   **Test:**
+    `t.test(Sleep.Duration ~ Gender, data = df, alternative = "greater")`\
+-   The test returned a **p-value = 0.009**.
 
-At the **5% significance level α = 0.05**, the p-value is smaller than α, so we **reject the null hypothesis**.
+At the **5% significance level α = 0.05**, the p-value is smaller than
+α, so we **reject the null hypothesis**.
 
 ### Distribution of sleep duration by gender (density plot)
 
-To visually compare sleep duration between genders, we plotted a density plot for **Female** and **Male** participants (*Plot 7*). The two curves overlap substantially, indicating that the typical sleep duration is similar for many individuals in both groups. However, the **female** distribution is slightly shifted toward higher sleep durations, with relatively more density in the **upper range (around ~8 hours and above)**. In contrast, the **male** distribution shows more density around the **mid-range (roughly ~7.5–8 hours)** and relatively less density at the highest values.
+To visually compare sleep duration between genders, we plotted a density
+plot for **Female** and **Male** participants (*Plot 7*). The two curves
+overlap substantially, indicating that the typical sleep duration is
+similar for many individuals in both groups. However, the **female**
+distribution is slightly shifted toward higher sleep durations, with
+relatively more density in the **upper range (around \~8 hours and
+above)**. In contrast, the **male** distribution shows more density
+around the **mid-range (roughly \~7.5–8 hours)** and relatively less
+density at the highest values.
 
-<img width="798" height="546" alt="image" src="https://github.com/user-attachments/assets/afe56dbc-5e3c-443c-99c4-07a82520c8b1" />
+<img src="https://github.com/user-attachments/assets/afe56dbc-5e3c-443c-99c4-07a82520c8b1" alt="image" width="798" height="546"/>
 
 *Plot 7: Density plots for sleep duration by gender*
 
-Overall, the density plot suggests a **small but noticeable tendency for women to sleep longer** than men. This visual pattern is consistent with the hypothesis test results, where the one-sided Welch t-test provided statistical evidence that the mean sleep duration for women is greater than that for men.
-
+Overall, the density plot suggests a **small but noticeable tendency for
+women to sleep longer** than men. This visual pattern is consistent with
+the hypothesis test results, where the one-sided Welch t-test provided
+statistical evidence that the mean sleep duration for women is greater
+than that for men.
 
 ### Conclusion
-There is **statistical evidence** that **women sleep longer on average than men** in this dataset. However, this result describes an association within the observed sample and does not by itself establish a causal relationship.
 
-R code for conducting the **one-sided Welch t-test** and drawing the plot:
-```r
+There is **statistical evidence** that **women sleep longer on average
+than men** in this dataset. However, this result describes an
+association within the observed sample and does not by itself establish
+a causal relationship.
+
+R code for conducting the **one-sided Welch t-test** and drawing the
+plot:
+
+``` r
 library(readr)
 library(ggplot2)
 
@@ -515,67 +533,132 @@ ggplot(df, aes(x = Sleep.Duration, fill = Gender)) +
   labs(title = "Sleep Duration Density by Gender", x = "Hours", y = "Density") +
   theme_minimal()
 ```
-## Can we predict sleep quality based on lifestyle habits and physiological indicators?
-To determine whether sleep quality can be predicted by various lifestyle and physiological factors, we fitted a multiple linear regression model. We used Quality.of.Sleep as the dependent variable and a set of independent variables: lifestyle (e.g., Stress Level, BMI),physiological (e.g., Blood Pressure) indicators.
 
-To evaluate the model's performance, we calculated both Multiple R-squared and Adjusted R-squared. While Multiple R-squared indicates the total proportion of variance explained by the model, we primarily relied on Adjusted R-squared to assess effectiveness, as it corrects for the number of predictors and prevents overestimation of the model's fit. Additionally, to identify which specific factors significantly influence sleep quality, we examined the t-statistics for each independent variable. A significant t-statistic (with a p-value < 0.05) indicates that the specific factor has a statistically significant linear relationship with sleep quality.
+## Can we predict sleep quality based on lifestyle habits and physiological indicators?
+
+To determine whether sleep quality can be predicted by various lifestyle
+and physiological factors, we fitted a multiple linear regression model.
+We used Quality.of.Sleep as the dependent variable and a set of
+independent variables: lifestyle (e.g., Stress Level, BMI),physiological
+(e.g., Blood Pressure) indicators.
+
+To evaluate the model's performance, we calculated both Multiple
+R-squared and Adjusted R-squared. While Multiple R-squared indicates the
+total proportion of variance explained by the model, we primarily relied
+on Adjusted R-squared to assess effectiveness, as it corrects for the
+number of predictors and prevents overestimation of the model's fit.
+Additionally, to identify which specific factors significantly influence
+sleep quality, we examined the t-statistics for each independent
+variable. A significant t-statistic (with a p-value \< 0.05) indicates
+that the specific factor has a statistically significant linear
+relationship with sleep quality.
 
 ### Hypotheses
-In multiple linear regression, we test the significance of the coefficient $\beta_j$ for each predictor $j$, holding all other variables constant.
 
-- **Null hypothesis ($H_0$):** $\beta_j = 0$  
-  (There is no linear relationship between predictor $j$ and Sleep Quality; the variable has no effect).
-- **Alternative hypothesis ($H_1$):** $\beta_j \neq 0$  
-  (There is a significant linear relationship; the variable has a non-zero effect on Sleep Quality).
+In multiple linear regression, we test the significance of the
+coefficient $\beta_j$ for each predictor $j$, holding all other
+variables constant.
 
-We perform this two-sided t-test for every predictor included in the model.
+-   **Null hypothesis (**$H_0$): $\beta_j = 0$\
+    (There is no linear relationship between predictor $j$ and Sleep
+    Quality; the variable has no effect).
+-   **Alternative hypothesis (**$H_1$): $\beta_j \neq 0$\
+    (There is a significant linear relationship; the variable has a
+    non-zero effect on Sleep Quality).
+
+We perform this two-sided t-test for every predictor included in the
+model.
 
 ### Assumptions and checks
-Before interpreting the results, we performed two key checks to ensure the model is valid:
 
-1.  **Independence of predictors:** We checked that the variables (like blood pressure components and stress) are distinct enough and do not heavily overlap with each other (no critical multicollinearity).
-2.  **Sample Size:** Since we have a large number of observations ($n=374$), the statistical tests used by the model are reliable and robust, even if the data isn't perfectly normally distributed.
+Before interpreting the results, we performed two key checks to ensure
+the model is valid:
+
+1.  **Independence of predictors:** We checked that the variables (like
+    blood pressure components and stress) are distinct enough and do not
+    heavily overlap with each other (no critical multicollinearity).
+2.  **Sample Size:** Since we have a large number of observations
+    ($n=374$), the statistical tests used by the model are reliable and
+    robust, even if the data isn't perfectly normally distributed.
 
 ### Test and results
-We fitted the linear model using `lm()` in R and examined the **t-statistics** and corresponding **p-values** for each coefficient from the model summary (`summary(model)`).
 
-**Significant findings:**
-1.  **Stress Level:** The test returned a large negative t-statistic with a **p-value < 0.001**.
-2.  **BMI Category (Overweight):** The test returned a negative t-statistic with a **p-value = 0.002**.
-3.  **Age:** The test returned a positive t-statistic with a **p-value = 0.002**.
+We fitted the linear model using `lm()` in R and examined the
+**t-statistics** and corresponding **p-values** for each coefficient
+from the model summary (`summary(model)`).
 
-At the **5% significance level ($\alpha = 0.05$)**, the p-values for these factors are smaller than $\alpha$. Therefore, we **reject the null hypothesis ($H_0$)** for Stress Level, BMI (Overweight), and Age, concluding that they significantly influence sleep quality.
+**Significant findings:** 1. **Stress Level:** The test returned a large
+negative t-statistic with a **p-value \< 0.001**. 2. **BMI Category
+(Overweight):** The test returned a negative t-statistic with a
+**p-value = 0.002**. 3. **Age:** The test returned a positive
+t-statistic with a **p-value = 0.002**.
 
-**Non-significant findings:**
-For variables such as **Physical Activity**, **Heart Rate**, and **Sleep Duration**, the p-values were greater than 0.05. Thus, we **fail to reject the null hypothesis** for these factors, meaning there is insufficient evidence to claim they affect sleep quality in this specific multivariate context.
+At the **5% significance level (**$\alpha = 0.05$), the p-values for
+these factors are smaller than $\alpha$. Therefore, we **reject the null
+hypothesis (**$H_0$) for Stress Level, BMI (Overweight), and Age,
+concluding that they significantly influence sleep quality.
+
+**Non-significant findings:** For variables such as **Physical
+Activity**, **Heart Rate**, and **Sleep Duration**, the p-values were
+greater than 0.05. Thus, we **fail to reject the null hypothesis** for
+these factors, meaning there is insufficient evidence to claim they
+affect sleep quality in this specific multivariate context.
 
 ### Model Accuracy ($R^2$ and Adjusted $R^2$)
-To evaluate how well our model fits the data, we calculated two key metrics:
 
-- **Multiple R-squared:** $0.57$
-- **Adjusted R-squared:** $0.56$
+To evaluate how well our model fits the data, we calculated two key
+metrics:
 
-**What do these numbers mean?**
-The **Adjusted R-squared of 0.56** indicates that our model explains approximately **56% of the variance** in sleep quality using the selected lifestyle and physiological factors. We focus on the *Adjusted* metric because it corrects for the number of predictors, providing a more conservative and accurate measure. 
+-   **Multiple R-squared:** $0.57$
+-   **Adjusted R-squared:** $0.56$
 
-This is considered a **fairly good result**. While we capture more than half of what determines sleep quality, the remaining ~44% suggests that other unmeasured factors—such as environment (noise, temperature, mattress quality) or genetics—also play a significant role. Given that we only used basic lifestyle data, explaining 56% of the variation is a strong outcome.
+**What do these numbers mean?** The **Adjusted R-squared of 0.56**
+indicates that our model explains approximately **56% of the variance**
+in sleep quality using the selected lifestyle and physiological factors.
+We focus on the *Adjusted* metric because it corrects for the number of
+predictors, providing a more conservative and accurate measure.
+
+This is considered a **fairly good result**. While we capture more than
+half of what determines sleep quality, the remaining \~44% suggests that
+other unmeasured factors—such as environment (noise, temperature,
+mattress quality) or genetics—also play a significant role. Given that
+we only used basic lifestyle data, explaining 56% of the variation is a
+strong outcome.
 
 ### Model Performance: Actual vs. Predicted Sleep Quality (Scatter Plot)
 
-To visually assess the model's accuracy, we plotted the **Actual** sleep quality scores against the **Predicted** scores (*Plot 8*).
+To visually assess the model's accuracy, we plotted the **Actual** sleep
+quality scores against the **Predicted** scores (*Plot 8*).
 
-The plot includes a **black dashed line** representing perfect prediction ($y=x$) and a **red solid line** showing the model's trend. The data points generally cluster along the diagonal, confirming that the model correctly captures the main trend: better lifestyle factors correspond to higher predicted sleep quality.
+The plot includes a **black dashed line** representing perfect
+prediction ($y=x$) and a **red solid line** showing the model's trend.
+The data points generally cluster along the diagonal, confirming that
+the model correctly captures the main trend: better lifestyle factors
+correspond to higher predicted sleep quality.
 
-However, the visible spread of points around the line reflects the **~44% unexplained variance**. This visual pattern is consistent with the Adjusted $R^2$ of 0.56, indicating that the model is reliable for predicting general trends but lacks precision for specific individual outliers.
+However, the visible spread of points around the line reflects the
+**\~44% unexplained variance**. This visual pattern is consistent with
+the Adjusted $R^2$ of 0.56, indicating that the model is reliable for
+predicting general trends but lacks precision for specific individual
+outliers.
 
-<img width="700" height="432" alt="image" src="https://github.com/user-attachments/assets/63d4eefc-184e-4bc5-92ff-ff25a69e5620" />
+<img src="https://github.com/user-attachments/assets/63d4eefc-184e-4bc5-92ff-ff25a69e5620" alt="image" width="700" height="432"/>
 
 *Plot 8: Actual vs. Predicted Sleep Quality*
 
 ### Conclusion
-There is **statistical evidence** that **Stress Level**, **BMI Category**, and **Age** are significant predictors of sleep quality. Specifically, lower stress, normal weight, and older age are associated with higher sleep scores. However, the model explains approximately **56% of the variance**, suggesting that while these lifestyle factors are crucial, other unmeasured individual differences also play a significant role.
 
-R code for conducting the multiple linear regression analysis and drawing the prediction plot:
+There is **statistical evidence** that **Stress Level**, **BMI
+Category**, and **Age** are significant predictors of sleep quality.
+Specifically, lower stress, normal weight, and older age are associated
+with higher sleep scores. However, the model explains approximately
+**56% of the variance**, suggesting that while these lifestyle factors
+are crucial, other unmeasured individual differences also play a
+significant role.
+
+R code for conducting the multiple linear regression analysis and
+drawing the prediction plot:
+
 ```{r}
 library(readr)
 library(dplyr)
