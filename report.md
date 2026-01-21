@@ -452,10 +452,6 @@ The plot includes a **black dashed line** representing perfect prediction ($y=x$
 
 However, the visible spread of points around the line reflects the **\~44% unexplained variance**. This visual pattern is consistent with the Adjusted $R^2$ of 0.56, indicating that the model is reliable for predicting general trends but lacks precision for specific individual outliers.
 
-<img src="https://github.com/user-attachments/assets/63d4eefc-184e-4bc5-92ff-ff25a69e5620" alt="image" width="700" height="432"/>
-
-*Plot 8: Actual vs. Predicted Sleep Quality*
-
 ### Conclusion
 
 There is **statistical evidence** that **Stress Level**, **BMI Category**, and **Age** are significant predictors of sleep quality. Specifically, lower stress, normal weight, and older age are associated with higher sleep scores. However, the model explains approximately **56% of the variance**, suggesting that while these lifestyle factors are crucial, other unmeasured individual differences also play a significant role.
