@@ -337,7 +337,7 @@ To investigate whether woman sleep longer than men, **sleep duration** was compa
 
 Let *μ1* be the mean sleep duration for women and *μ2* the mean sleep duration for men.
 
--   **Null hypothesis (H0):** *μ1 = μ2*\
+-  **Null hypothesis (H0):** *μ1 = μ2* 
 -   **Alternative hypothesis (H1):** *μ1 \> μ2*\
     This is a one-tailed test because we specifically want to know whether women sleep *more* (than men).
 
