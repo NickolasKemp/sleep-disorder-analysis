@@ -347,7 +347,7 @@ We set the **significance level** at α = 0.05.
 Parametric tests, like the t-test, assume that the variable of interest is approximately normally distributed within each group. To assess whether this assumption holds for sleep duration, we first examined **histograms** of sleep duration separately for women and men.
 
 ```{r histogram, fig.width=6, fig.height=4}
-ggplot(sleep_data, aes(x = Sleep.Duration, fill = Gender)) +
+ggplot(df, aes(x = Sleep.Duration, fill = Gender)) +
   geom_histogram(alpha = 0.5, position = "identity", binwidth = 0.1) +
   facet_wrap(~Gender) +
   theme_minimal() +
@@ -363,7 +363,7 @@ From the histograms, sleep duration does not appear perfectly normally distribut
 
 library(ggplot2)
 
-ggplot(sleep_data, aes(sample = Sleep.Duration)) +
+ggplot(df, aes(sample = Sleep.Duration)) +
   stat_qq() +
   stat_qq_line() +
   facet_wrap(~Gender) +
@@ -377,8 +377,8 @@ The QQ plots suggest that sleep duration does not follow a normal distribution f
 ```{r}
 library(nortest)
 
-lillie.test(sleep_data$Sleep.Duration[sleep_data$Gender == "Female"])
-lillie.test(sleep_data$Sleep.Duration[sleep_data$Gender == "Male"])
+lillie.test(df$Sleep.Duration[sleep_data$Gender == "Female"])
+lillie.test(df$Sleep.Duration[sleep_data$Gender == "Male"])
 
 ```
 
@@ -390,7 +390,7 @@ Mann–Whitney U test
 
 ```{r}
 wilcox.test(Sleep.Duration ~ Gender, 
-            data = sleep_data, 
+            data = df, 
             alternative = "greater")
 
 
