@@ -387,6 +387,8 @@ Histograms and QQ plots suggested that sleep duration **does not** follow a norm
 
 ### Test and results
 
+Mann–Whitney U test
+
 ```{r}
 wilcox.test(Sleep.Duration ~ Gender, 
             data = sleep_data, 
