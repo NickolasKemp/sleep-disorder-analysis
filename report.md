@@ -30,7 +30,6 @@ sleep_data <- read.csv("sleep_disorder_dataset.csv")
 We check structure of the dataset by looking at column names and verifying if there are any missing values. We do that by summary of all variables, which provides an overview of variable types, value ranges, category frequencies and the presence of missing value.
 
 ``` r
-# Summary of all columns
 summary(sleep_data)
 ```
 
@@ -337,7 +336,7 @@ To investigate whether woman sleep longer than men, **sleep duration** was compa
 
 Let *μ1* be the mean sleep duration for women and *μ2* the mean sleep duration for men.
 
--  **Null hypothesis (H0):** *μ1 = μ2* 
+-   **Null hypothesis (H0):** *μ1 = μ2*
 -   **Alternative hypothesis (H1):** *μ1 \> μ2*\
     This is a one-tailed test because we specifically want to know whether women sleep *more* (than men).
 
