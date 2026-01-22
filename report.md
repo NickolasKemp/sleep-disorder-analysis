@@ -17,12 +17,19 @@ library(knitr)
     -   [3.1 Target Variable: Sleep.Disorder](#31-target-variable-sleepdisorder)
     -   [3.2 Demographics: Age and Gender](#32-demographics-age-and-gender)
     -   [3.3 Lifestyle Factors: Stress Level, Physical Activity Level, and Daily Steps](#33-lifestyle-factors-stress-level-physical-activity-level-and-daily-steps)
-    -   [3.4 Biometrics: Sleep Duration, Quality of Sleep, and Heart Rate](#34-biometrics-sleep-duration-quality-of-sleep-and-heart-rate)
+    -   [3.4 Biometrics: Sleep Duration, Quality of Sleep](#34-biometrics-sleep-duration-quality-of-sleep)
 -   [4. Questions](#4-questions)
     -   [4.1 Is there an association between sleep disorders and BMI category?](#41-is-there-an-association-between-sleep-disorders-and-bmi-category)
     -   [4.2 Do women sleep longer on average than men?](#42-do-women-sleep-longer-on-average-than-men)
     -   [4.3 Do stress levels differ between doctors, teachers, and engineers?](#43-do-stress-levels-differ-between-doctors-teachers-and-engineers)
     -   [4.4 Can we predict sleep quality based on lifestyle habits and physiological indicators?](#44-can-we-predict-sleep-quality-based-on-lifestyle-habits-and-physiological-indicators)
+-   [5. Overall conclusions and next steps](#5-overall-conclusions-and-next-steps)
+    -   [5.1 Summary of the dataset](#51-summary-of-the-dataset)
+    -   [5.2 Key findings from the research questions](#52-key-findings-from-the-research-questions)
+    -   [5.3 Practical interpretation](#53-practical-interpretation)
+    -   [5.4 Limitations](#54-limitations)
+    -   [5.5 Final conclusion](#55-final-conclusion)
+
 
 # 1. Project overview
 
@@ -518,6 +525,44 @@ ggplot(df, aes(x = Quality.of.Sleep, y = Predicted_Sleep_Quality)) +
   theme_minimal()
 ```
 
+# 5. Overall conclusions and next steps
+
+## 5.1 Summary of the dataset
+
+This analysis used **374 observations** with a nearly balanced gender split (**189 men**, **185 women**). Participants were aged **27–59** (*mean ≈ 42.2*). Average sleep duration was **≈ 7.13 hours** (range **5.8–8.5**), and average self-reported sleep quality was **≈ 7.32/10** (range **3.7–10**). Most participants recorded **≈ 6,817 daily steps** on average (range **3,000–10,000**), and stress was typically moderate (*median = 5 on a 1–9 scale*).
+
+Regarding the target outcome, **58.6%** reported **no sleep disorder** (coded as “None”), while **Insomnia (20.6%)** and **Sleep Apnea (20.9%)** were both common in this sample.
+
+## 5.2 Key findings from the research questions
+
+**1) Sleep disorder and BMI category are strongly associated.**  
+After merging “Overweight” and “Obese” due to small expected counts, the Chi-square test showed an extremely strong relationship (**p < 0.001**). Practically, the pattern is very clear: in the **Normal BMI** group, most individuals fall in the “None” category, while the **Overweight/Obese** group contains the majority of **Insomnia** and **Sleep Apnea** cases.
+
+**2) Women sleep slightly longer than men on average.**  
+Because sleep duration violated normality assumptions, a one-sided Mann–Whitney U test was used. The result (**p = 0.007**) supports the conclusion that women sleep longer than men in this dataset. However, the difference is modest in size: mean sleep duration is **≈ 7.23 hours for women** versus **≈ 7.04 hours for men** (about **12 minutes** difference on average).
+
+**3) Stress levels differ substantially by profession (Doctor vs Teacher vs Engineer).**  
+ANOVA results indicate strong evidence of differences among the three occupation groups (**p < 0.001**). Descriptively, **doctors have the highest stress levels** (mean ≈ **6.73**), while **engineers** (mean ≈ **4.01**) and **teachers** (mean ≈ **4.53**) are notably lower.
+
+**4) Sleep quality is moderately predictable from the available lifestyle and physiological variables.**  
+The multiple linear regression achieved **R² ≈ 0.57** and **Adjusted R² ≈ 0.56**, meaning the model explains about **56%** of variability in sleep quality. The strongest and most consistent predictor is **Stress Level** (negative association). **Age** (positive association) and **BMI (Overweight vs Normal)** (negative association) also remain statistically significant once other variables are controlled. In contrast, variables like physical activity, heart rate, and sleep duration did not show independent significance in the multivariable model—likely because their effects overlap with other predictors or are not linear in this dataset.
+
+## 5.3 Practical interpretation
+
+Overall, the dataset suggests a coherent story: **higher stress and higher BMI align with poorer sleep outcomes**, both in terms of **sleep disorder prevalence** and **lower sleep quality scores**. While this analysis cannot establish causality, it supports targeting **stress reduction** and **healthy weight management** as plausible intervention points, and it highlights BMI category as a strong marker for identifying individuals at higher risk of insomnia or sleep apnea within this sample.
+
+## 5.4 Limitations
+
+Several limitations should be kept in mind when interpreting results:
+
+- **Observational / cross-sectional design:** associations do not imply causation.
+- **Self-reported measures:** sleep quality and related variables may contain reporting bias.
+- **Category imbalance:** some categories are small (e.g., “Obese” is rare in this dataset), which required merging BMI groups and can reduce granularity.
+- **Model assumptions and omitted variables:** the regression explains 56% of variance, but the remaining 44% likely reflects unmeasured factors such as mental health, environmental conditions (noise, light), medication use, alcohol intake, screen time, genetics, and work schedules.
+
+## 5.5 Final conclusion
+
+In conclusion, sleep disorders are common in this dataset (about **41%** combined insomnia/sleep apnea), and the strongest relationships observed are the links between **BMI category and sleep disorder**, and between **stress and sleep quality**. The regression model suggests that a relatively small set of measurable factors—especially stress level, BMI, and age—captures a meaningful portion of differences in sleep quality, but substantial unexplained variation remains, motivating future work with richer behavioral and environmental data.
 
 
 
