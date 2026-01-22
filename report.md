@@ -143,11 +143,8 @@ ggplot(sleep_data, aes(x = Gender, fill = Gender)) +
 
 ## Lifestyle Factors: Stress Level, Physical Activity Level, and Daily Steps
 
-Based on the exploratory plots of the lifestyle variables, the sample appears **moderately active overall**. The **Daily.Steps** distribution (*Plot 1*) shows that most participants fall roughly between **4,500 and 8,500 steps per day**, with the highest concentration around **7,500–8,000 steps**, and a smaller group reaching close to **10,000 steps**. This suggests that a large portion of the dataset consists of individuals who achieve a moderate amount of daily movement.
-
-We chose to display the data using a density plot rather than a histogram because the histogram produced sharp spikes, making the distribution harder to interpret.
-
-``` r
+Overall, participants appear **moderately active**. Most people record about **4,500–8,500 daily steps**, with a peak around **7,500–8,000**, and fewer reaching close to **10,000**.
+```{r daily-steps-density, fig.width=6, fig.height=4, message=FALSE, warning=FALSE}
 library(readr)
 library(ggplot2)
 
@@ -156,82 +153,48 @@ df <- read_csv("sleep_data_cleaned.csv")
 ggplot(df, aes(x = Daily.Steps)) +
   geom_density(fill = "#69b3a2", alpha = 0.6) +
   theme_classic() +
-  labs(title = "Daily Steps Density", x = "Steps")
+  labs(title = "Daily Steps Density", x = "Steps", y = "Density")
 ```
 
-*Plot 1: Daily steps distribution.*
+Stress.Level is mostly concentrated in the mid-to-high range (about 3–8), indicating many participants report moderate to elevated stress.
 
-The **Physical.Activity.Level** plot (*Plot 2*) indicates that activity is not spread smoothly across the scale; instead, participants cluster at a few specific values (visible as strong spikes). This implies the variable likely represents **predefined or rounded activity scores**, meaning the dataset contains several distinct activity groups rather than a continuous range. The central tendency (marked by the vertical reference line) lies around the middle of the scale, reinforcing the conclusion that the “typical” participant has a **moderate activity level**.
-
-This time, we chose a histogram rather than a density plot because the density plot would make it harder to interpret and summarize the overall physical activity level.
-
-``` r
-ggplot(df, aes(x = factor(Physical.Activity.Level))) +
-  geom_vline(xintercept = 8, linetype = "dashed", color = "darkred", size = 1) +
-  geom_bar(fill = "#69b3a2", color = "white") +
-  labs(title = "Physical activity level distribution", x = "Physical activity level", y = "Count") +
-  theme_minimal()
-```
-
-*Plot 2: Physical Activity Level Distribution.*
-
-For **Stress.Level**, the distribution (*Plot 3*) is concentrated in the **mid-to-higher range (approximately 3–8)**. There is no dominance of very low stress values, and the presence of many observations toward the upper levels indicates that a meaningful share of participants experience **elevated stress**. Overall, the plots suggest a population that is generally **moderately active**, but with **moderate-to-high stress levels**, which may be relevant when later examining relationships with sleep quality and sleep disorders.
-
-``` r
+```{r}
 ggplot(df, aes(x = factor(Stress.Level, levels = 1:9))) + 
   geom_bar(fill = "#69b3a2", color = "white") + 
   scale_x_discrete(drop = FALSE) +  
   theme_minimal() + 
-  labs(title = "Distribution of Stress Levels", x = "Level", y = "Count")
+  labs(title = "Stress Level Distribution", x = "Stress Level", y = "Count")
 ```
 
-*Plot 3: Stress Level Distribution.*
+### Biometrics: Sleep Duration, Quality of Sleep, and Heart Rate
+Most participants sleep about 6 to 8.5 hours, with clear clustering around common sleep lengths.
 
-## Biometrics: Sleep Duration, Quality of Sleep, and Heart Rate
-
-To describe the baseline sleep and physiological characteristics of the participants, we examined the distributions of **Sleep.Duration**, **Quality.of.Sleep**, and **Heart.Rate**. These plots provide an overview of what is “typical” in the dataset and help frame later comparisons across gender, occupation, and sleep disorder groups.
-
-The **Sleep.Duration** distribution (*Plot 4*) shows that most participants sleep between roughly **6 and 8.5 hours**, with noticeable peaks around **\~6–6.5 hours** and **\~7.5–8 hours**. Very short (\<6 hours) and very long (\~9 hours) sleep durations are less common. Overall, the sample appears to cluster around a fairly typical sleep range, but with clear variation that may be linked to lifestyle factors or sleep disorder status.
-
-``` r
-library(readr)
-library(ggplot2)
-
-df <- read_csv("sleep_data_cleaned.csv")
-
+```{r}
 ggplot(df, aes(x = Sleep.Duration)) +
-  geom_density(fill = "#4E79A7", color = "#4E79A7", alpha = 0.6) +
+  geom_density(fill = "#4E79A7", alpha = 0.6) +
   xlim(5, 9) +
   theme_classic() +
   labs(title = "Sleep Duration Distribution", x = "Hours", y = "Density")
 ```
 
-*Plot 4: Sleep Duration Distribution.*
+Sleep quality ratings are mostly mid-to-high, with the highest density around 7–8 on the 1–10 scale.
 
-The **Quality.of.Sleep** distribution (*Plot 5*) is concentrated in the **mid-to-high range**, with the highest density around approximately **7–8** on the 1–10 scale. Lower scores (around 4–5) occur less frequently, suggesting that most participants report **moderate to good sleep quality**, while a smaller subset experiences poorer perceived sleep quality.
-
-``` r
+```{r}
 ggplot(df, aes(x = Quality.of.Sleep)) +
-  geom_density(fill = "#59A14F", color = "#59A14F", alpha = 0.6, adjust = 2) +
+  geom_density(fill = "#59A14F", alpha = 0.6, adjust = 2) +
   theme_classic() +
-  labs(title = "Quality of Sleep Ratings", x = "Quality Score (1-10)", y = "Density")
+  labs(title = "Quality of Sleep Ratings", x = "Quality Score (1–10)", y = "Density")
 ```
 
-*Plot 5: Quality of Sleep Distribution.*
+Heart rate is concentrated around the high 60s to low 70s bpm, with fewer observations at higher values.
 
-Finally, the **Heart.Rate** distribution (*Plot 6*) is centered around the **high 60s to low 70s bpm**, indicating that the majority of participants fall within a relatively typical resting heart rate range. The distribution is slightly right-skewed, with fewer individuals showing higher values (above \~80 bpm). These higher heart rates may reflect differences in fitness, stress, or health status and could be informative when examined alongside stress, activity, and sleep disorder categories.
-
-``` r
+```{r}
 ggplot(df, aes(x = Heart.Rate)) +
   geom_histogram(binwidth = 1, fill = "#E15759", color = "white", alpha = 0.7) +
   xlim(60, 90) +
   theme_classic() +
   labs(title = "Heart Rate Distribution", x = "Heart Rate (bpm)", y = "Count")
 ```
-
-*Plot 6: Heart Rate Distribution.*
-
-R code for computing Plots 4-6:
 
 
 # 4. Questions
@@ -401,7 +364,7 @@ To investigate whether **stress levels** differ by profession, **Stress.Level** 
 
 The boxplot suggests that **doctors tend to have higher stress levels** than teachers and engineers, while teachers and engineers appear more similar, though there is still some overlap between all groups.
 
-```r
+```{r boxplot-stress, fig.width=6, fig.height=4, message=FALSE, warning=FALSE}
 library(readr)
 library(dplyr)
 library(ggplot2)
@@ -437,7 +400,7 @@ We set the significance level at *α* = 0.05.
 
 A one-way ANOVA assumes (among other things) that group variances are equal. We checked **equality of variances** using **Bartlett’s test**.
 
-```r
+```{r}
 bart_res <- bartlett.test(Stress.Level ~ Group, data = dat)
 bart_res
 ```
@@ -448,7 +411,7 @@ Bartlett’s test returned a p-value greater than 0.05 (p = 0.2105), so we **fai
 
 One-way ANOVA
 
-```r
+```{r}
 anova_fit <- aov(Stress.Level ~ Group, data = dat)
 anova_out <- summary(anova_fit)
 anova_out
