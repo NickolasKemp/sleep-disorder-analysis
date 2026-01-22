@@ -19,32 +19,32 @@ Overall, the project aims to translate the dataset into actionable statistical f
 
 # 2. Data Validation and Cleaning
 
-Ensuring that the dataset is clean, consistent and reliable is a crucial step before analysis. Data cleaning involves checking each column for missing values, wrong entries or inconsistencies and correcting them. Numeric columns such as age, sleep duration, quality of sleep, psychical activity level, stress level, heart rate and daily sleeps and caffeine intake were summarized to confirm that all values fall within reasonable range and no impossible values or outliers exist. Categorical variables including gender, occupation, BMI category and sleep disorder, were checked for consistency and duplication. Blood pressure was special case, where format of it is "systolic/diastolic". It was carefully handled and split into 2 variables systolic and diastolic. Additionally, the first few rows of dataset were visually inspected, and unique values were reviewed to validate that no formatting errors were present. This detailed cleaning and validation process ensures that dataset is ready for accurate exploratory analysis and statistical testing.
+Ensuring that the dataset is clean, consistent, and reliable is a crucial step before analysis. Data cleaning involves checking each column for missing values, wrong entries, or inconsistencies and correcting them. Numeric columns, such as age, sleep duration, quality of sleep, physical activity level, stress level, heart rate, daily sleep, and caffeine intake, were summarized to confirm that all values fall within a reasonable range and no impossible values or outliers exist. Categorical variables, including gender, occupation, BMI category, and sleep disorder, were checked for consistency and duplication. Blood pressure was a special case, where the format of it is "systolic/diastolic". It was carefully handled and split into 2 variables: systolic and diastolic. Additionally, the first few rows of the dataset were visually inspected, and unique values were reviewed to validate that no formatting errors were present. This detailed cleaning and validation process ensures that the dataset is ready for accurate exploratory analysis and statistical testing.
 
-Firstly, we import the dataset into variable sleep_data.
+Firstly, we import the dataset into the variable sleep_data.
 
 ``` r
 sleep_data <- read.csv("sleep_disorder_dataset.csv")
 ```
 
-We check structure of the dataset by looking at column names and verifying if there are any missing values. We do that by summary of all variables, which provides an overview of variable types, value ranges, category frequencies and the presence of missing value.
+We check the structure of the dataset by looking at column names and verifying if there are any missing values. We do that by summarizing all variables, which provides an overview of variable types, value ranges, category frequencies, and the presence of missing value.
 
 ``` r
 summary(sleep_data)
 ```
 
-The summary indicates that there are no missing values in the dataset and that all numerical variables, except blood pressure which is stored in a combined format, fall within reasonable and expected ranges.
+The summary indicates that there are no missing values in the dataset and that all numerical variables, except blood pressure, which is stored in a combined format, fall within reasonable and expected ranges.
 
 Before continuing the analysis, the **Blood Pressure** column requires special attention.
 
-We inspect first few values.
+We inspect the first few values.
 
 ``` r
 head(sleep_data$Blood.Pressure) 
 unique(sleep_data$Blood.Pressure) 
 ```
 
-Notice form of values are systolic/diastolic.
+Notice the form of values is systolic/diastolic.
 
 We split into Systolic and Diastolic columns.
 
@@ -74,7 +74,7 @@ table(sleep_data$BMI.Category)
 
 Everything is consistent now.
 
-Finally, we save cleaned dataset.
+Finally, we save the cleaned dataset.
 
 ``` r
 write.csv(sleep_data, "sleep_data_cleaned.csv", row.names = FALSE) 
@@ -147,26 +147,6 @@ Based on the exploratory plots of the lifestyle variables, the sample appears **
 
 We chose to display the data using a density plot rather than a histogram because the histogram produced sharp spikes, making the distribution harder to interpret.
 
-<img src="https://github.com/user-attachments/assets/cf292cf2-2f54-4a87-bb18-7b99bcdd817a" alt="image" width="865" height="546"/>
-
-*Plot 1: Daily steps distribution.*
-
-The **Physical.Activity.Level** plot (*Plot 2*) indicates that activity is not spread smoothly across the scale; instead, participants cluster at a few specific values (visible as strong spikes). This implies the variable likely represents **predefined or rounded activity scores**, meaning the dataset contains several distinct activity groups rather than a continuous range. The central tendency (marked by the vertical reference line) lies around the middle of the scale, reinforcing the conclusion that the “typical” participant has a **moderate activity level**.
-
-This time, we chose a histogram rather than a density plot because the density plot would make it harder to interpret and summarize the overall physical activity level.
-
-<img src="https://github.com/user-attachments/assets/ebf8beed-72c2-40ce-adfd-b8fb76c34bd3" alt="image" width="865" height="546"/>
-
-*Plot 2: Physical Activity Level Distribution.*
-
-For **Stress.Level**, the distribution (*Plot 3*) is concentrated in the **mid-to-higher range (approximately 3–8)**. There is no dominance of very low stress values, and the presence of many observations toward the upper levels indicates that a meaningful share of participants experience **elevated stress**. Overall, the plots suggest a population that is generally **moderately active**, but with **moderate-to-high stress levels**, which may be relevant when later examining relationships with sleep quality and sleep disorders.
-
-<img src="https://github.com/user-attachments/assets/76ac7c4f-a477-4a53-a31d-ca9c2efd92b4" alt="image" width="865" height="546"/>
-
-*Plot 3: Stress Level Distribution.*
-
-R code for computing Plots 1-3:
-
 ``` r
 library(readr)
 library(ggplot2)
@@ -177,13 +157,27 @@ ggplot(df, aes(x = Daily.Steps)) +
   geom_density(fill = "#69b3a2", alpha = 0.6) +
   theme_classic() +
   labs(title = "Daily Steps Density", x = "Steps")
+```
 
+*Plot 1: Daily steps distribution.*
+
+The **Physical.Activity.Level** plot (*Plot 2*) indicates that activity is not spread smoothly across the scale; instead, participants cluster at a few specific values (visible as strong spikes). This implies the variable likely represents **predefined or rounded activity scores**, meaning the dataset contains several distinct activity groups rather than a continuous range. The central tendency (marked by the vertical reference line) lies around the middle of the scale, reinforcing the conclusion that the “typical” participant has a **moderate activity level**.
+
+This time, we chose a histogram rather than a density plot because the density plot would make it harder to interpret and summarize the overall physical activity level.
+
+``` r
 ggplot(df, aes(x = factor(Physical.Activity.Level))) +
   geom_vline(xintercept = 8, linetype = "dashed", color = "darkred", size = 1) +
   geom_bar(fill = "#69b3a2", color = "white") +
   labs(title = "Physical activity level distribution", x = "Physical activity level", y = "Count") +
   theme_minimal()
+```
 
+*Plot 2: Physical Activity Level Distribution.*
+
+For **Stress.Level**, the distribution (*Plot 3*) is concentrated in the **mid-to-higher range (approximately 3–8)**. There is no dominance of very low stress values, and the presence of many observations toward the upper levels indicates that a meaningful share of participants experience **elevated stress**. Overall, the plots suggest a population that is generally **moderately active**, but with **moderate-to-high stress levels**, which may be relevant when later examining relationships with sleep quality and sleep disorders.
+
+``` r
 ggplot(df, aes(x = factor(Stress.Level, levels = 1:9))) + 
   geom_bar(fill = "#69b3a2", color = "white") + 
   scale_x_discrete(drop = FALSE) +  
@@ -191,29 +185,13 @@ ggplot(df, aes(x = factor(Stress.Level, levels = 1:9))) +
   labs(title = "Distribution of Stress Levels", x = "Level", y = "Count")
 ```
 
+*Plot 3: Stress Level Distribution.*
+
 ## Biometrics: Sleep Duration, Quality of Sleep, and Heart Rate
 
 To describe the baseline sleep and physiological characteristics of the participants, we examined the distributions of **Sleep.Duration**, **Quality.of.Sleep**, and **Heart.Rate**. These plots provide an overview of what is “typical” in the dataset and help frame later comparisons across gender, occupation, and sleep disorder groups.
 
 The **Sleep.Duration** distribution (*Plot 4*) shows that most participants sleep between roughly **6 and 8.5 hours**, with noticeable peaks around **\~6–6.5 hours** and **\~7.5–8 hours**. Very short (\<6 hours) and very long (\~9 hours) sleep durations are less common. Overall, the sample appears to cluster around a fairly typical sleep range, but with clear variation that may be linked to lifestyle factors or sleep disorder status.
-
-<img src="https://github.com/user-attachments/assets/48f1a730-bccf-40ac-8704-892a5e94a358" alt="image" width="798" height="546"/>
-
-*Plot 4: Sleep Duration Distribution.*
-
-The **Quality.of.Sleep** distribution (*Plot 5*) is concentrated in the **mid-to-high range**, with the highest density around approximately **7–8** on the 1–10 scale. Lower scores (around 4–5) occur less frequently, suggesting that most participants report **moderate to good sleep quality**, while a smaller subset experiences poorer perceived sleep quality.
-
-<img src="https://github.com/user-attachments/assets/9c6c65bb-5d59-4634-9891-477fced5a473" alt="image" width="798" height="546"/>
-
-*Plot 5: Quality of Sleep Distribution.*
-
-Finally, the **Heart.Rate** distribution (*Plot 6*) is centered around the **high 60s to low 70s bpm**, indicating that the majority of participants fall within a relatively typical resting heart rate range. The distribution is slightly right-skewed, with fewer individuals showing higher values (above \~80 bpm). These higher heart rates may reflect differences in fitness, stress, or health status and could be informative when examined alongside stress, activity, and sleep disorder categories.
-
-<img src="https://github.com/user-attachments/assets/c5cd904a-d3de-416e-b747-4ea711082c79" alt="image" width="798" height="546"/>
-
-*Plot 6: Heart Rate Distribution.*
-
-R code for computing Plots 4-6:
 
 ``` r
 library(readr)
@@ -226,12 +204,24 @@ ggplot(df, aes(x = Sleep.Duration)) +
   xlim(5, 9) +
   theme_classic() +
   labs(title = "Sleep Duration Distribution", x = "Hours", y = "Density")
+```
 
+*Plot 4: Sleep Duration Distribution.*
+
+The **Quality.of.Sleep** distribution (*Plot 5*) is concentrated in the **mid-to-high range**, with the highest density around approximately **7–8** on the 1–10 scale. Lower scores (around 4–5) occur less frequently, suggesting that most participants report **moderate to good sleep quality**, while a smaller subset experiences poorer perceived sleep quality.
+
+``` r
 ggplot(df, aes(x = Quality.of.Sleep)) +
   geom_density(fill = "#59A14F", color = "#59A14F", alpha = 0.6, adjust = 2) +
   theme_classic() +
   labs(title = "Quality of Sleep Ratings", x = "Quality Score (1-10)", y = "Density")
+```
 
+*Plot 5: Quality of Sleep Distribution.*
+
+Finally, the **Heart.Rate** distribution (*Plot 6*) is centered around the **high 60s to low 70s bpm**, indicating that the majority of participants fall within a relatively typical resting heart rate range. The distribution is slightly right-skewed, with fewer individuals showing higher values (above \~80 bpm). These higher heart rates may reflect differences in fitness, stress, or health status and could be informative when examined alongside stress, activity, and sleep disorder categories.
+
+``` r
 ggplot(df, aes(x = Heart.Rate)) +
   geom_histogram(binwidth = 1, fill = "#E15759", color = "white", alpha = 0.7) +
   xlim(60, 90) +
@@ -239,9 +229,14 @@ ggplot(df, aes(x = Heart.Rate)) +
   labs(title = "Heart Rate Distribution", x = "Heart Rate (bpm)", y = "Count")
 ```
 
+*Plot 6: Heart Rate Distribution.*
+
+R code for computing Plots 4-6:
+
+
 # 4. Questions
 
-## Is there an association between sleep disorders and BMI category?
+## 4.1 Is there an association between sleep disorders and BMI category?
 
 Both variables are categorical: - **BMI.Category** (Underweight, Normal, Overweight, Obese) - **Sleep.Disorder** (None, Insomnia, Sleep Apnea)
 
@@ -286,7 +281,7 @@ if (any(expected_counts < 5)) {
 
 ```
 
-Since in the we have very small counts (less than 5) in some cells, the Chi-Square test's p-value calculation can become unreliable. Let's merge `Overweight` and `Obese` into a single one
+Since we have very small counts (less than 5) in some cells, the Chi-Square test's p-value calculation can become unreliable. Let's merge `Overweight` and `Obese` into a single one
 
 ```{r}
 
@@ -328,7 +323,7 @@ if (chi_test$p.value < 0.05) {
 
 ```
 
-## Do women sleep longer on average than men?
+## 4.2 Do women sleep longer on average than men?
 
 To investigate whether woman sleep longer than men, **sleep duration** was compared between two gender groups
 
@@ -400,7 +395,72 @@ wilcox.test(Sleep.Duration ~ Gender,
 
 We performed a one-sided Mann–Whitney U test to compare sleep duration between women and men. The test returned a p-value of 0.007. Since this is less than the significance level of 0.05, we **reject** the null hypothesis and conclude that women sleep longer than men.
 
-## Can we predict sleep quality based on lifestyle habits and physiological indicators?
+## 4.3 Do stress levels differ between doctors, teachers, and engineers?
+
+To investigate whether **stress levels** differ by profession, **Stress.Level** was compared across three occupation groups: **Doctor**, **Teacher**, and **Engineer** (where *Software Engineer* was combined into **Engineer**).
+
+The boxplot suggests that **doctors tend to have higher stress levels** than teachers and engineers, while teachers and engineers appear more similar, though there is still some overlap between all groups.
+
+```r
+library(readr)
+library(dplyr)
+library(ggplot2)
+
+df <- read_csv("sleep_data_cleaned.csv")
+
+# Keep relevant occupations and merge Software Engineer into Engineer
+dat <- df %>%
+  filter(Occupation %in% c("Doctor", "Teacher", "Engineer", "Software Engineer")) %>%
+  mutate(
+    Group = if_else(Occupation == "Software Engineer", "Engineer", Occupation),
+    Group = factor(Group, levels = c("Doctor", "Teacher", "Engineer"))
+  )
+
+ggplot(dat, aes(x = Group, y = Stress.Level)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(width = 0.15, height = 0, alpha = 0.6) +
+  theme_minimal() +
+  labs(
+    title = "Stress Level by Profession",
+    x = "Profession",
+    y = "Stress Level"
+  )
+```
+
+### Hypotheses
+Let *μ1* be the mean stress level for doctors, *μ2* for teachers, and *μ3* for engineers.
+- **H₀:** *μ1* = *μ2* = *μ3*  
+- **H₁:** At least one group mean is different.
+We set the significance level at *α* = 0.05.
+
+### Assumptions and checks
+
+A one-way ANOVA assumes (among other things) that group variances are equal. We checked **equality of variances** using **Bartlett’s test**.
+
+```r
+bart_res <- bartlett.test(Stress.Level ~ Group, data = dat)
+bart_res
+```
+
+Bartlett’s test returned a p-value greater than 0.05 (p = 0.2105), so we **fail to reject** the null hypothesis of equal variances. This indicates the equal-variance assumption is **not violated**, and it is appropriate to proceed with a standard one-way ANOVA.
+
+### Test and results
+
+One-way ANOVA
+
+```r
+anova_fit <- aov(Stress.Level ~ Group, data = dat)
+anova_out <- summary(anova_fit)
+anova_out
+```
+
+The one-way ANOVA produced **F(2, 175) = 87.5428** with **p = 4.473e-27**, indicating a statistically significant difference in mean stress levels among the three professions.
+
+### Conclusion
+
+Since the ANOVA p-value is far below α = 0.05, we reject the null hypothesis and conclude that **stress levels differ significantly** between doctors, teachers, and engineers in this dataset. Descriptively, doctors show the **highest average stress levels**, while teachers and engineers report lower average stress.
+
+## 4.4 Can we predict sleep quality based on lifestyle habits and physiological indicators?
 
 To determine whether sleep quality can be predicted by various lifestyle and physiological factors, we fitted a multiple linear regression model. We used Quality.of.Sleep as the dependent variable and a set of independent variables: lifestyle (e.g., Stress Level, BMI),physiological (e.g., Blood Pressure) indicators.
 
