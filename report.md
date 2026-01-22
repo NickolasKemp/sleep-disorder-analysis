@@ -1,26 +1,28 @@
 ---
 title: "sleep disorder analysis"
 output: pdf_document
+date: "22.01.2026."
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
 ```
 
 ## Index
 
-- [1. Project overview](#1-project-overview)
-- [2. Data Validation and Cleaning](#2-data-validation-and-cleaning)
-- [3. Preliminary Data Analysis](#3-preliminary-data-analysis)
-  - [3.1 Target Variable: Sleep.Disorder](#31-target-variable-sleepdisorder)
-  - [3.2 Demographics: Age and Gender](#32-demographics-age-and-gender)
-  - [3.3 Lifestyle Factors: Stress Level, Physical Activity Level, and Daily Steps](#33-lifestyle-factors-stress-level-physical-activity-level-and-daily-steps)
-  - [3.4 Biometrics: Sleep Duration, Quality of Sleep, and Heart Rate](#34-biometrics-sleep-duration-quality-of-sleep-and-heart-rate)
-- [4. Questions](#4-questions)
-  - [4.1 Is there an association between sleep disorders and BMI category?](#41-is-there-an-association-between-sleep-disorders-and-bmi-category)
-  - [4.2 Do women sleep longer on average than men?](#42-do-women-sleep-longer-on-average-than-men)
-  - [4.3 Do stress levels differ between doctors, teachers, and engineers?](#43-do-stress-levels-differ-between-doctors-teachers-and-engineers)
-  - [4.4 Can we predict sleep quality based on lifestyle habits and physiological indicators?](#44-can-we-predict-sleep-quality-based-on-lifestyle-habits-and-physiological-indicators)
+-   [1. Project overview](#1-project-overview)
+-   [2. Data Validation and Cleaning](#2-data-validation-and-cleaning)
+-   [3. Preliminary Data Analysis](#3-preliminary-data-analysis)
+    -   [3.1 Target Variable: Sleep.Disorder](#31-target-variable-sleepdisorder)
+    -   [3.2 Demographics: Age and Gender](#32-demographics-age-and-gender)
+    -   [3.3 Lifestyle Factors: Stress Level, Physical Activity Level, and Daily Steps](#33-lifestyle-factors-stress-level-physical-activity-level-and-daily-steps)
+    -   [3.4 Biometrics: Sleep Duration, Quality of Sleep, and Heart Rate](#34-biometrics-sleep-duration-quality-of-sleep-and-heart-rate)
+-   [4. Questions](#4-questions)
+    -   [4.1 Is there an association between sleep disorders and BMI category?](#41-is-there-an-association-between-sleep-disorders-and-bmi-category)
+    -   [4.2 Do women sleep longer on average than men?](#42-do-women-sleep-longer-on-average-than-men)
+    -   [4.3 Do stress levels differ between doctors, teachers, and engineers?](#43-do-stress-levels-differ-between-doctors-teachers-and-engineers)
+    -   [4.4 Can we predict sleep quality based on lifestyle habits and physiological indicators?](#44-can-we-predict-sleep-quality-based-on-lifestyle-habits-and-physiological-indicators)
 
 # 1. Project overview
 
@@ -38,13 +40,13 @@ Ensuring that the dataset is clean, consistent, and reliable is a crucial step b
 
 Firstly, we import the dataset into the variable sleep_data.
 
-``` r
+```{r}
 sleep_data <- read.csv("sleep_disorder_dataset.csv")
 ```
 
 We check the structure of the dataset by looking at column names and verifying if there are any missing values. We do that by summarizing all variables, which provides an overview of variable types, value ranges, category frequencies, and the presence of missing value.
 
-``` r
+```{r}
 summary(sleep_data)
 ```
 
@@ -54,7 +56,7 @@ Before continuing the analysis, the **Blood Pressure** column requires special a
 
 We inspect the first few values.
 
-``` r
+```{r}
 head(sleep_data$Blood.Pressure) 
 unique(sleep_data$Blood.Pressure) 
 ```
@@ -63,7 +65,7 @@ Notice the form of values is systolic/diastolic.
 
 We split into Systolic and Diastolic columns.
 
-``` r
+```{r}
 bp_split <- strsplit(as.character(sleep_data$Blood.Pressure),"/")
 bp_matrix <- do.call(rbind, bp_split)
 sleep_data$Systolic <- as.numeric(bp_matrix[,1])
@@ -74,7 +76,7 @@ After resolving this issue, the analysis proceeds with the examination of catego
 
 **Categorical variables** were examined to verify the validity and consistency of category labels and to identify potential duplicates or misspellings.
 
-``` r
+```{r}
 categorical_cols <- c("Gender", "Occupation", "BMI.Category", "Sleep.Disorder")
 
 lapply(sleep_data[categorical_cols], table)
@@ -82,7 +84,7 @@ lapply(sleep_data[categorical_cols], table)
 
 An inconsistency was detected in the BMI category, where the labels “Normal” and “Normal Weight” referred to the same group. We merge those 2.
 
-``` r
+```{r}
 sleep_data$BMI.Category[sleep_data$BMI.Category == "Normal Weight"] <- "Normal"
 table(sleep_data$BMI.Category) 
 ```
@@ -103,7 +105,7 @@ We will first look at the distribution of individual variables to get a baseline
 
 ## 3.1 Target Variable: Sleep.Disorder
 
-``` r
+```{r graph,fig.width=5, fig.height=4}
 library(tidyverse)
 library(scales)
 
@@ -117,7 +119,7 @@ ggplot(df, aes(x = Sleep.Disorder)) +
   geom_bar(fill = "steelblue") +
   # Add text labels with Count and Percentage
   geom_text(stat = "count", 
-            aes(label = paste0(after_stat(count), "\n(", 
+            aes(label = paste0(after_stat(count), "(", 
                                percent(after_stat(count) / sum(after_stat(count)), accuracy = 0.1), ")")),
             vjust = -0.25, 
             size = 4) +
@@ -133,7 +135,7 @@ ggplot(df, aes(x = Sleep.Disorder)) +
 
 We will create a histogram for Age to see the age distribution of the participants and a bar chart for Gender to see the male/female split.
 
-```{r Age-visualizations}
+```{r Age-visualizations,fig.width=5, fig.height=3}
 # Age Histogram
 ggplot(sleep_data, aes(x = Age)) +
   geom_histogram(binwidth = 2, fill = "skyblue", color = "black", alpha = 0.7) +
@@ -143,7 +145,7 @@ ggplot(sleep_data, aes(x = Age)) +
   theme_minimal()
 ```
 
-```{r gender-visualizations}
+```{r gender-visualizations,fig.width=5, fig.height=3}
 # Gender Bar Chart
 ggplot(sleep_data, aes(x = Gender, fill = Gender)) +
   geom_bar() +
@@ -159,6 +161,7 @@ ggplot(sleep_data, aes(x = Gender, fill = Gender)) +
 ## 3.3 Lifestyle Factors: Stress Level, Physical Activity Level, and Daily Steps
 
 Overall, participants appear **moderately active**. Most people record about **4,500–8,500 daily steps**, with a peak around **7,500–8,000**, and fewer reaching close to **10,000**.
+
 ```{r daily-steps-density, fig.width=6, fig.height=4, message=FALSE, warning=FALSE}
 library(readr)
 library(ggplot2)
@@ -173,7 +176,7 @@ ggplot(df, aes(x = Daily.Steps)) +
 
 Stress.Level is mostly concentrated in the mid-to-high range (about 3–8), indicating many participants report moderate to elevated stress.
 
-```{r}
+```{r,fig.width=5, fig.height=3}
 ggplot(df, aes(x = factor(Stress.Level, levels = 1:9))) + 
   geom_bar(fill = "#69b3a2", color = "white") + 
   scale_x_discrete(drop = FALSE) +  
@@ -181,10 +184,11 @@ ggplot(df, aes(x = factor(Stress.Level, levels = 1:9))) +
   labs(title = "Stress Level Distribution", x = "Stress Level", y = "Count")
 ```
 
-## 3.4 Biometrics: Sleep Duration, Quality of Sleep, and Heart Rate
+## 3.4 Biometrics: Sleep Duration, Quality of Sleep
+
 Most participants sleep about 6 to 8.5 hours, with clear clustering around common sleep lengths.
 
-```{r}
+```{r,fig.width=5, fig.height=3}
 ggplot(df, aes(x = Sleep.Duration)) +
   geom_density(fill = "#4E79A7", alpha = 0.6) +
   xlim(5, 9) +
@@ -194,23 +198,12 @@ ggplot(df, aes(x = Sleep.Duration)) +
 
 Sleep quality ratings are mostly mid-to-high, with the highest density around 7–8 on the 1–10 scale.
 
-```{r}
+```{r,fig.width=5, fig.height=3}
 ggplot(df, aes(x = Quality.of.Sleep)) +
   geom_density(fill = "#59A14F", alpha = 0.6, adjust = 2) +
   theme_classic() +
   labs(title = "Quality of Sleep Ratings", x = "Quality Score (1–10)", y = "Density")
 ```
-
-Heart rate is concentrated around the high 60s to low 70s bpm, with fewer observations at higher values.
-
-```{r}
-ggplot(df, aes(x = Heart.Rate)) +
-  geom_histogram(binwidth = 1, fill = "#E15759", color = "white", alpha = 0.7) +
-  xlim(60, 90) +
-  theme_classic() +
-  labs(title = "Heart Rate Distribution", x = "Heart Rate (bpm)", y = "Count")
-```
-
 
 # 4. Questions
 
@@ -220,27 +213,21 @@ Both variables are categorical: - **BMI.Category** (Underweight, Normal, Overwei
 
 Because we are analyzing the relationship between two categorical variables, we use a **Chi-Square Test of Independence**.
 
-------------------------------------------------------------------------
-
 ### Hypotheses
 
--   **Null Hypothesis (H₀):**\
+-   **Null Hypothesis (**$H_0$):\
     BMI category and sleep disorder are independent.\
     Knowing a person’s BMI category gives no information about their sleep disorder.
 
--   **Alternative Hypothesis (H₁):**\
+-   **Alternative Hypothesis (**$H_1$):\
     BMI category and sleep disorder are associated.\
     Knowing a person’s BMI category gives information about their sleep disorder.
-
-------------------------------------------------------------------------
 
 ### Statistical Method
 
 The Chi-Square Test of Independence compares: - the **observed frequencies** of sleep disorders within each BMI category - the **expected frequencies** assuming the two variables are independent
 
 Large differences between observed and expected counts indicate a possible association.
-
-------------------------------------------------------------------------
 
 ### Contingency Table
 
@@ -307,13 +294,13 @@ To investigate whether woman sleep longer than men, **sleep duration** was compa
 
 ### Hypotheses
 
-Let *μ1* be the mean sleep duration for women and *μ2* the mean sleep duration for men.
+Let $\mu_1$ be the mean sleep duration for women and $\mu_2$ the mean sleep duration for men.
 
--   **Null hypothesis (H0):** *μ1 = μ2*
--   **Alternative hypothesis (H1):** *μ1 \> μ2*\
+-   **Null hypothesis ($H_0$):** $\mu_1$ = $\mu_2$
+-   **Alternative hypothesis ($H_1$):** $\mu_1$ \> $\mu_2$\
     This is a one-tailed test because we specifically want to know whether women sleep *more* (than men).
 
-We set the **significance level** at α = 0.05.
+We set the **significance level** at $\alpha$ = 0.05.
 
 ### Assumptions and checks
 
@@ -334,7 +321,6 @@ From the histograms, sleep duration does not appear perfectly normally distribut
 
 ```{r qq plot, fig.width=6, fig.height=4}
 
-library(ggplot2)
 
 ggplot(df, aes(sample = Sleep.Duration)) +
   stat_qq() +
@@ -380,9 +366,7 @@ To investigate whether **stress levels** differ by profession, **Stress.Level** 
 The boxplot suggests that **doctors tend to have higher stress levels** than teachers and engineers, while teachers and engineers appear more similar, though there is still some overlap between all groups.
 
 ```{r boxplot-stress, fig.width=6, fig.height=4, message=FALSE, warning=FALSE}
-library(readr)
 library(dplyr)
-library(ggplot2)
 
 df <- read_csv("sleep_data_cleaned.csv")
 
@@ -406,10 +390,9 @@ ggplot(dat, aes(x = Group, y = Stress.Level)) +
 ```
 
 ### Hypotheses
-Let *μ1* be the mean stress level for doctors, *μ2* for teachers, and *μ3* for engineers.
-- **H₀:** *μ1* = *μ2* = *μ3*  
-- **H₁:** At least one group mean is different.
-We set the significance level at *α* = 0.05.
+
+Let *$\mu_1$* be the mean stress level for doctors, *$\mu_2$* for teachers, and *$\mu_3$* for engineers. - **$H_0$:** *$\mu_1$* = *$\mu_2$* = *$\mu_3$*\
+- **$H_1$:** At least one group mean is different. We set the significance level at *$\alpha$* = 0.05.
 
 ### Assumptions and checks
 
@@ -436,7 +419,7 @@ The one-way ANOVA produced **F(2, 175) = 87.5428** with **p = 4.473e-27**, indic
 
 ### Conclusion
 
-Since the ANOVA p-value is far below α = 0.05, we reject the null hypothesis and conclude that **stress levels differ significantly** between doctors, teachers, and engineers in this dataset. Descriptively, doctors show the **highest average stress levels**, while teachers and engineers report lower average stress.
+Since the ANOVA p-value is far below *$\alpha$* = 0.05, we reject the null hypothesis and conclude that **stress levels differ significantly** between doctors, teachers, and engineers in this dataset. Descriptively, doctors show the **highest average stress levels**, while teachers and engineers report lower average stress.
 
 ## 4.4 Can we predict sleep quality based on lifestyle habits and physiological indicators?
 
@@ -498,19 +481,14 @@ There is **statistical evidence** that **Stress Level**, **BMI Category**, and *
 R code for conducting the multiple linear regression analysis and drawing the prediction plot:
 
 ```{r}
-library(readr)
-library(dplyr)
-library(ggplot2)
 
-# 1 Load pre-cleaned data
-df <- read_csv("sleep_data_cleaned.csv", show_col_types = FALSE)
 
-# 2 Build Linear Regression Model
+#  Build Linear Regression Model
 model <- lm(Quality.of.Sleep ~ Age + Gender + Physical.Activity.Level + Stress.Level + 
             BMI.Category + Heart.Rate + Daily.Steps + Sleep.Duration + Systolic + Diastolic, 
             data = df)
 
-# 3 Output Results
+#  Output Results
 summ <- summary(model)
 
 cat("Model Accuracy Metrics:\n")
@@ -524,7 +502,7 @@ significant_factors <- coeffs[coeffs[, 4] < 0.05, ]
 print("Significant Factors affecting Sleep Quality (p-value < 0.05):")
 print(significant_factors)
 
-# 4 Visualization: Actual vs Predicted
+#  Visualization: Actual vs Predicted
 df$Predicted_Sleep_Quality <- predict(model)
 
 ggplot(df, aes(x = Quality.of.Sleep, y = Predicted_Sleep_Quality)) +
@@ -539,3 +517,7 @@ ggplot(df, aes(x = Quality.of.Sleep, y = Predicted_Sleep_Quality)) +
   ) +
   theme_minimal()
 ```
+
+
+
+
