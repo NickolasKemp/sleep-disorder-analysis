@@ -12,10 +12,10 @@ knitr::opts_chunk$set(echo = TRUE)
 - [1. Project overview](#1-project-overview)
 - [2. Data Validation and Cleaning](#2-data-validation-and-cleaning)
 - [3. Preliminary Data Analysis](#3-preliminary-data-analysis)
-  - [Target Variable: Sleep.Disorder](#target-variable-sleepdisorder)
-  - [Demographics: Age and Gender](#demographics-age-and-gender)
-  - [Lifestyle Factors: Stress Level, Physical Activity Level, and Daily Steps](#lifestyle-factors-stress-level-physical-activity-level-and-daily-steps)
-  - [Biometrics: Sleep Duration, Quality of Sleep, and Heart Rate](#biometrics-sleep-duration-quality-of-sleep-and-heart-rate)
+  - [3.1 Target Variable: Sleep.Disorder](#31-target-variable-sleepdisorder)
+  - [3.2 Demographics: Age and Gender](#32-demographics-age-and-gender)
+  - [3.3 Lifestyle Factors: Stress Level, Physical Activity Level, and Daily Steps](#33-lifestyle-factors-stress-level-physical-activity-level-and-daily-steps)
+  - [3.4 Biometrics: Sleep Duration, Quality of Sleep, and Heart Rate](#34-biometrics-sleep-duration-quality-of-sleep-and-heart-rate)
 - [4. Questions](#4-questions)
   - [4.1 Is there an association between sleep disorders and BMI category?](#41-is-there-an-association-between-sleep-disorders-and-bmi-category)
   - [4.2 Do women sleep longer on average than men?](#42-do-women-sleep-longer-on-average-than-men)
@@ -101,7 +101,7 @@ After cleaning, we will begin exploratory data analysis to understand the datase
 
 We will first look at the distribution of individual variables to get a baseline.
 
-## Target Variable: Sleep.Disorder
+## 3.1 Target Variable: Sleep.Disorder
 
 ``` r
 library(tidyverse)
@@ -129,7 +129,7 @@ ggplot(df, aes(x = Sleep.Disorder)) +
   theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 ```
 
-## Demographics: Age and Gender
+## 3.2 Demographics: Age and Gender
 
 We will create a histogram for Age to see the age distribution of the participants and a bar chart for Gender to see the male/female split.
 
@@ -156,7 +156,7 @@ ggplot(sleep_data, aes(x = Gender, fill = Gender)) +
 
 ```
 
-## Lifestyle Factors: Stress Level, Physical Activity Level, and Daily Steps
+## 3.3 Lifestyle Factors: Stress Level, Physical Activity Level, and Daily Steps
 
 Overall, participants appear **moderately active**. Most people record about **4,500–8,500 daily steps**, with a peak around **7,500–8,000**, and fewer reaching close to **10,000**.
 ```{r daily-steps-density, fig.width=6, fig.height=4, message=FALSE, warning=FALSE}
@@ -181,7 +181,7 @@ ggplot(df, aes(x = factor(Stress.Level, levels = 1:9))) +
   labs(title = "Stress Level Distribution", x = "Stress Level", y = "Count")
 ```
 
-### Biometrics: Sleep Duration, Quality of Sleep, and Heart Rate
+## 3.4 Biometrics: Sleep Duration, Quality of Sleep, and Heart Rate
 Most participants sleep about 6 to 8.5 hours, with clear clustering around common sleep lengths.
 
 ```{r}
