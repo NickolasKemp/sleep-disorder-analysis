@@ -7,6 +7,21 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Index
+
+- [1. Project overview](#1-project-overview)
+- [2. Data Validation and Cleaning](#2-data-validation-and-cleaning)
+- [3. Preliminary Data Analysis](#3-preliminary-data-analysis)
+  - [Target Variable: Sleep.Disorder](#target-variable-sleepdisorder)
+  - [Demographics: Age and Gender](#demographics-age-and-gender)
+  - [Lifestyle Factors: Stress Level, Physical Activity Level, and Daily Steps](#lifestyle-factors-stress-level-physical-activity-level-and-daily-steps)
+  - [Biometrics: Sleep Duration, Quality of Sleep, and Heart Rate](#biometrics-sleep-duration-quality-of-sleep-and-heart-rate)
+- [4. Questions](#4-questions)
+  - [4.1 Is there an association between sleep disorders and BMI category?](#41-is-there-an-association-between-sleep-disorders-and-bmi-category)
+  - [4.2 Do women sleep longer on average than men?](#42-do-women-sleep-longer-on-average-than-men)
+  - [4.3 Do stress levels differ between doctors, teachers, and engineers?](#43-do-stress-levels-differ-between-doctors-teachers-and-engineers)
+  - [4.4 Can we predict sleep quality based on lifestyle habits and physiological indicators?](#44-can-we-predict-sleep-quality-based-on-lifestyle-habits-and-physiological-indicators)
+
 # 1. Project overview
 
 This project analyzes the **Sleep Disorder Diagnosis Dataset** (`sleep_disorder_dataset.csv`) to understand the **occurrence of sleep disorders**—primarily **Insomnia** and **Sleep Apnea**—and how they relate to **demographic**, **lifestyle**, and **physiological** factors. The dataset contains **\~374 observations** and **14 (15 after cleaning) variables** describing participants’ sleep habits and outcomes (e.g., **Sleep.Duration**, **Quality.of.Sleep**), lifestyle indicators (e.g., **Physical.Activity.Level**, **Stress.Level**, **Daily.Steps**, **Caffeine.Intake**), and biometric measures (e.g., **BMI.Category**, **Blood.Pressure**, **Heart.Rate**).
