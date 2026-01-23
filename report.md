@@ -1,37 +1,27 @@
 ---
-title: "sleep disorder analysis"
-output: pdf_document
+title: "Sleep Disorder Analysis"
 date: "22.01.2026."
+author:
+  - Luka Nikolić
+  - Viktor Benedetti
+  - Maksym Melnyk
+  - Mykola Tubolev
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
 ---
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(knitr)
 ```
 
-## Index
-
--   [1. Project overview](#1-project-overview)
--   [2. Data Validation and Cleaning](#2-data-validation-and-cleaning)
--   [3. Preliminary Data Analysis](#3-preliminary-data-analysis)
-    -   [3.1 Target Variable: Sleep.Disorder](#31-target-variable-sleepdisorder)
-    -   [3.2 Demographics: Age and Gender](#32-demographics-age-and-gender)
-    -   [3.3 Lifestyle Factors: Stress Level, Physical Activity Level, and Daily Steps](#33-lifestyle-factors-stress-level-physical-activity-level-and-daily-steps)
-    -   [3.4 Biometrics: Sleep Duration, Quality of Sleep](#34-biometrics-sleep-duration-quality-of-sleep)
--   [4. Questions](#4-questions)
-    -   [4.1 Is there an association between sleep disorders and BMI category?](#41-is-there-an-association-between-sleep-disorders-and-bmi-category)
-    -   [4.2 Do women sleep longer on average than men?](#42-do-women-sleep-longer-on-average-than-men)
-    -   [4.3 Do stress levels differ between doctors, teachers, and engineers?](#43-do-stress-levels-differ-between-doctors-teachers-and-engineers)
-    -   [4.4 Can we predict sleep quality based on lifestyle habits and physiological indicators?](#44-can-we-predict-sleep-quality-based-on-lifestyle-habits-and-physiological-indicators)
--   [5. Overall conclusions and next steps](#5-overall-conclusions-and-next-steps)
-    -   [5.1 Summary of the dataset](#51-summary-of-the-dataset)
-    -   [5.2 Key findings from the research questions](#52-key-findings-from-the-research-questions)
-    -   [5.3 Practical interpretation](#53-practical-interpretation)
-    -   [5.4 Limitations](#54-limitations)
-    -   [5.5 Final conclusion](#55-final-conclusion)
 
 
-# 1. Project overview
+# Project overview
 
 This project analyzes the **Sleep Disorder Diagnosis Dataset** (`sleep_disorder_dataset.csv`) to understand the **occurrence of sleep disorders**—primarily **Insomnia** and **Sleep Apnea**—and how they relate to **demographic**, **lifestyle**, and **physiological** factors. The dataset contains **\~374 observations** and **14 (15 after cleaning) variables** describing participants’ sleep habits and outcomes (e.g., **Sleep.Duration**, **Quality.of.Sleep**), lifestyle indicators (e.g., **Physical.Activity.Level**, **Stress.Level**, **Daily.Steps**, **Caffeine.Intake**), and biometric measures (e.g., **BMI.Category**, **Blood.Pressure**, **Heart.Rate**).
 
@@ -41,7 +31,7 @@ Core research questions include: - Is there an association between **sleep disor
 
 Overall, the project aims to translate the dataset into actionable statistical findings that clarify which measurable factors most strongly relate to sleep disorders and overall sleep quality in the observed population.
 
-# 2. Data Validation and Cleaning
+# Data Validation and Cleaning
 
 Ensuring that the dataset is clean, consistent, and reliable is a crucial step before analysis. Data cleaning involves checking each column for missing values, wrong entries, or inconsistencies and correcting them. Numeric columns, such as age, sleep duration, quality of sleep, physical activity level, stress level, heart rate, daily sleep, and caffeine intake, were summarized to confirm that all values fall within a reasonable range and no impossible values or outliers exist. Categorical variables, including gender, occupation, BMI category, and sleep disorder, were checked for consistency and duplication. Blood pressure was a special case, where the format of it is "systolic/diastolic". It was carefully handled and split into 2 variables: systolic and diastolic. Additionally, the first few rows of the dataset were visually inspected, and unique values were reviewed to validate that no formatting errors were present. This detailed cleaning and validation process ensures that the dataset is ready for accurate exploratory analysis and statistical testing.
 
@@ -104,13 +94,13 @@ Finally, we save the cleaned dataset.
 write.csv(sleep_data, "sleep_data_cleaned.csv", row.names = FALSE) 
 ```
 
-# 3. Preliminary Data Analysis
+# Preliminary Data Analysis
 
 After cleaning, we will begin exploratory data analysis to understand the dataset's characteristics.
 
 We will first look at the distribution of individual variables to get a baseline.
 
-## 3.1 Target Variable: Sleep.Disorder
+## Target Variable: Sleep.Disorder
 
 ```{r graph,fig.width=5, fig.height=4}
 library(tidyverse)
@@ -138,7 +128,7 @@ ggplot(df, aes(x = Sleep.Disorder)) +
   theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 ```
 
-## 3.2 Demographics: Age and Gender
+## Demographics: Age and Gender
 
 We will create a histogram for Age to see the age distribution of the participants and a bar chart for Gender to see the male/female split.
 
@@ -165,9 +155,9 @@ ggplot(sleep_data, aes(x = Gender, fill = Gender)) +
 
 ```
 
-## 3.3 Lifestyle Factors: Stress Level, Physical Activity Level, and Daily Steps
+## Lifestyle Factors: Stress Level, Physical Activity Level, and Daily Steps
 
-Overall, participants appear **moderately active**. Most people record about **4,500–8,500 daily steps**, with a peak around **7,500–8,000**, and fewer reaching close to **10,000**.
+Overall, participants appear **moderately active**. Most people record about **4,500-8,500 daily steps**, with a peak around **7,500-8,000**, and fewer reaching close to **10,000**.
 
 ```{r daily-steps-density, fig.width=6, fig.height=4, message=FALSE, warning=FALSE}
 library(readr)
@@ -181,7 +171,7 @@ ggplot(df, aes(x = Daily.Steps)) +
   labs(title = "Daily Steps Density", x = "Steps", y = "Density")
 ```
 
-Stress.Level is mostly concentrated in the mid-to-high range (about 3–8), indicating many participants report moderate to elevated stress.
+Stress.Level is mostly concentrated in the mid-to-high range (about 3-8), indicating many participants report moderate to elevated stress.
 
 ```{r,fig.width=5, fig.height=3}
 ggplot(df, aes(x = factor(Stress.Level, levels = 1:9))) + 
@@ -191,7 +181,7 @@ ggplot(df, aes(x = factor(Stress.Level, levels = 1:9))) +
   labs(title = "Stress Level Distribution", x = "Stress Level", y = "Count")
 ```
 
-## 3.4 Biometrics: Sleep Duration, Quality of Sleep
+## Biometrics: Sleep Duration, Quality of Sleep
 
 Most participants sleep about 6 to 8.5 hours, with clear clustering around common sleep lengths.
 
@@ -203,18 +193,18 @@ ggplot(df, aes(x = Sleep.Duration)) +
   labs(title = "Sleep Duration Distribution", x = "Hours", y = "Density")
 ```
 
-Sleep quality ratings are mostly mid-to-high, with the highest density around 7–8 on the 1–10 scale.
+Sleep quality ratings are mostly mid-to-high, with the highest density around 7-8 on the 1-10 scale.
 
 ```{r,fig.width=5, fig.height=3}
 ggplot(df, aes(x = Quality.of.Sleep)) +
   geom_density(fill = "#59A14F", alpha = 0.6, adjust = 2) +
   theme_classic() +
-  labs(title = "Quality of Sleep Ratings", x = "Quality Score (1–10)", y = "Density")
+  labs(title = "Quality of Sleep Ratings", x = "Quality Score (1-10)", y = "Density")
 ```
 
-# 4. Questions
+#  Questions
 
-## 4.1 Is there an association between sleep disorders and BMI category?
+##  Is there an association between sleep disorders and BMI category?
 
 Both variables are categorical: - **BMI.Category** (Underweight, Normal, Overweight, Obese) - **Sleep.Disorder** (None, Insomnia, Sleep Apnea)
 
@@ -295,7 +285,7 @@ if (chi_test$p.value < 0.05) {
 
 ```
 
-## 4.2 Do women sleep longer on average than men?
+##  Do women sleep longer on average than men?
 
 To investigate whether woman sleep longer than men, **sleep duration** was compared between two gender groups
 
@@ -348,11 +338,11 @@ lillie.test(df$Sleep.Duration[sleep_data$Gender == "Male"])
 
 ```
 
-Histograms and QQ plots suggested that sleep duration **does not** follow a normal distribution for either gender. The Lilliefors test confirmed this: for women, D = 0.182, p \< 2.2e-16, and for men, D = 0.162, p \< 0.001. Since the normality assumption is violated, a non-parametric test, such as the Mann–Whitney U test, is more appropriate for comparing sleep duration between genders.
+Histograms and QQ plots suggested that sleep duration **does not** follow a normal distribution for either gender. The Lilliefors test confirmed this: for women, D = 0.182, p \< 2.2e-16, and for men, D = 0.162, p \< 0.001. Since the normality assumption is violated, a non-parametric test, such as the Mann-Whitney U test, is more appropriate for comparing sleep duration between genders.
 
 ### Test and results
 
-Mann–Whitney U test
+Mann-Whitney U test
 
 ```{r}
 wilcox.test(Sleep.Duration ~ Gender, 
@@ -364,9 +354,9 @@ wilcox.test(Sleep.Duration ~ Gender,
 
 ### Conclusion
 
-We performed a one-sided Mann–Whitney U test to compare sleep duration between women and men. The test returned a p-value of 0.007. Since this is less than the significance level of 0.05, we **reject** the null hypothesis and conclude that women sleep longer than men.
+We performed a one-sided Mann-Whitney U test to compare sleep duration between women and men. The test returned a p-value of 0.007. Since this is less than the significance level of 0.05, we **reject** the null hypothesis and conclude that women sleep longer than men.
 
-## 4.3 Do stress levels differ between doctors, teachers, and engineers?
+##  Do stress levels differ between doctors, teachers, and engineers?
 
 To investigate whether **stress levels** differ by profession, **Stress.Level** was compared across three occupation groups: **Doctor**, **Teacher**, and **Engineer** (where *Software Engineer* was combined into **Engineer**).
 
@@ -428,7 +418,7 @@ The one-way ANOVA produced **F(2, 175) = 87.5428** with **p = 4.473e-27**, indic
 
 Since the ANOVA p-value is far below *$\alpha$* = 0.05, we reject the null hypothesis and conclude that **stress levels differ significantly** between doctors, teachers, and engineers in this dataset. Descriptively, doctors show the **highest average stress levels**, while teachers and engineers report lower average stress.
 
-## 4.4 Can we predict sleep quality based on lifestyle habits and physiological indicators?
+## Can we predict sleep quality based on lifestyle habits and physiological indicators?
 
 To determine whether sleep quality can be predicted by various lifestyle and physiological factors, we fitted a multiple linear regression model. We used Quality.of.Sleep as the dependent variable and a set of independent variables: lifestyle (e.g., Stress Level, BMI),physiological (e.g., Blood Pressure) indicators.
 
@@ -525,33 +515,33 @@ ggplot(df, aes(x = Quality.of.Sleep, y = Predicted_Sleep_Quality)) +
   theme_minimal()
 ```
 
-# 5. Overall conclusions and next steps
+#  Overall conclusions and next steps
 
-## 5.1 Summary of the dataset
+##  Summary of the dataset
 
-This analysis used **374 observations** with a nearly balanced gender split (**189 men**, **185 women**). Participants were aged **27–59** (*mean ≈ 42.2*). Average sleep duration was **≈ 7.13 hours** (range **5.8–8.5**), and average self-reported sleep quality was **≈ 7.32/10** (range **3.7–10**). Most participants recorded **≈ 6,817 daily steps** on average (range **3,000–10,000**), and stress was typically moderate (*median = 5 on a 1–9 scale*).
+This analysis used **374 observations** with a nearly balanced gender split (**189 men**, **185 women**). Participants were aged **27-59** (*mean $\approx 42.2$*). Average sleep duration was **$\approx 7.13$ hours** (range **5.8-8.5**), and average self-reported sleep quality was **$\approx 7.32$** (range **3.7-10**). Most participants recorded **$\approx 6817$ daily steps** on average (range **3,000-10,000**), and stress was typically moderate (*median = 5 on a 1-9 scale*).
 
-Regarding the target outcome, **58.6%** reported **no sleep disorder** (coded as “None”), while **Insomnia (20.6%)** and **Sleep Apnea (20.9%)** were both common in this sample.
+Regarding the target outcome, **58.6%** reported **no sleep disorder** (coded as "None"), while **Insomnia (20.6%)** and **Sleep Apnea (20.9%)** were both common in this sample.
 
-## 5.2 Key findings from the research questions
+## Key findings from the research questions
 
 **1) Sleep disorder and BMI category are strongly associated.**  
 After merging “Overweight” and “Obese” due to small expected counts, the Chi-square test showed an extremely strong relationship (**p < 0.001**). Practically, the pattern is very clear: in the **Normal BMI** group, most individuals fall in the “None” category, while the **Overweight/Obese** group contains the majority of **Insomnia** and **Sleep Apnea** cases.
 
 **2) Women sleep slightly longer than men on average.**  
-Because sleep duration violated normality assumptions, a one-sided Mann–Whitney U test was used. The result (**p = 0.007**) supports the conclusion that women sleep longer than men in this dataset. However, the difference is modest in size: mean sleep duration is **≈ 7.23 hours for women** versus **≈ 7.04 hours for men** (about **12 minutes** difference on average).
+Because sleep duration violated normality assumptions, a one-sided Mann-Whitney U test was used. The result (**p = 0.007**) supports the conclusion that women sleep longer than men in this dataset. However, the difference is modest in size: mean sleep duration is **$\approx 7.23$ hours for women** versus **$\approx 7.04$ hours for men** (about **12 minutes** difference on average).
 
 **3) Stress levels differ substantially by profession (Doctor vs Teacher vs Engineer).**  
-ANOVA results indicate strong evidence of differences among the three occupation groups (**p < 0.001**). Descriptively, **doctors have the highest stress levels** (mean ≈ **6.73**), while **engineers** (mean ≈ **4.01**) and **teachers** (mean ≈ **4.53**) are notably lower.
+ANOVA results indicate strong evidence of differences among the three occupation groups (**p < 0.001**). Descriptively, **doctors have the highest stress levels** (mean  **$\approx 6.73$**), while **engineers** (mean  **$\approx 4.01$**) and **teachers** (mean  **$\approx 4.53$**) are notably lower.
 
 **4) Sleep quality is moderately predictable from the available lifestyle and physiological variables.**  
-The multiple linear regression achieved **R² ≈ 0.57** and **Adjusted R² ≈ 0.56**, meaning the model explains about **56%** of variability in sleep quality. The strongest and most consistent predictor is **Stress Level** (negative association). **Age** (positive association) and **BMI (Overweight vs Normal)** (negative association) also remain statistically significant once other variables are controlled. In contrast, variables like physical activity, heart rate, and sleep duration did not show independent significance in the multivariable model—likely because their effects overlap with other predictors or are not linear in this dataset.
+The multiple linear regression achieved **R² $\approx 0.57$** and **Adjusted R² $\approx 0.56$**, meaning the model explains about **56%** of variability in sleep quality. The strongest and most consistent predictor is **Stress Level** (negative association). **Age** (positive association) and **BMI (Overweight vs Normal)** (negative association) also remain statistically significant once other variables are controlled. In contrast, variables like physical activity, heart rate, and sleep duration did not show independent significance in the multivariable model-likely because their effects overlap with other predictors or are not linear in this dataset.
 
-## 5.3 Practical interpretation
+## Practical interpretation
 
 Overall, the dataset suggests a coherent story: **higher stress and higher BMI align with poorer sleep outcomes**, both in terms of **sleep disorder prevalence** and **lower sleep quality scores**. While this analysis cannot establish causality, it supports targeting **stress reduction** and **healthy weight management** as plausible intervention points, and it highlights BMI category as a strong marker for identifying individuals at higher risk of insomnia or sleep apnea within this sample.
 
-## 5.4 Limitations
+## Limitations
 
 Several limitations should be kept in mind when interpreting results:
 
@@ -560,9 +550,9 @@ Several limitations should be kept in mind when interpreting results:
 - **Category imbalance:** some categories are small (e.g., “Obese” is rare in this dataset), which required merging BMI groups and can reduce granularity.
 - **Model assumptions and omitted variables:** the regression explains 56% of variance, but the remaining 44% likely reflects unmeasured factors such as mental health, environmental conditions (noise, light), medication use, alcohol intake, screen time, genetics, and work schedules.
 
-## 5.5 Final conclusion
+## Final conclusion
 
-In conclusion, sleep disorders are common in this dataset (about **41%** combined insomnia/sleep apnea), and the strongest relationships observed are the links between **BMI category and sleep disorder**, and between **stress and sleep quality**. The regression model suggests that a relatively small set of measurable factors—especially stress level, BMI, and age—captures a meaningful portion of differences in sleep quality, but substantial unexplained variation remains, motivating future work with richer behavioral and environmental data.
+In conclusion, sleep disorders are common in this dataset (about **41%** combined insomnia/sleep apnea), and the strongest relationships observed are the links between **BMI category and sleep disorder**, and between **stress and sleep quality**. The regression model suggests that a relatively small set of measurable factors-especially stress level, BMI, and age-captures a meaningful portion of differences in sleep quality, but substantial unexplained variation remains, motivating future work with richer behavioral and environmental data.
 
 
 
